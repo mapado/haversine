@@ -12,3 +12,8 @@ located by their latitude and longitude.
 >>> haversine(lyon, paris, miles=True)
 243.589575470673  # in miles
 ```
+
+## Installation
+```bash
+$ pip install haversine
+```
