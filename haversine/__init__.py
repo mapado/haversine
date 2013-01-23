@@ -6,10 +6,14 @@ AVG_EARTH_RADIUS = 6367.5  # in km
 def haversine(point1, point2, miles=False):
     """ Calculate the great-circle distance bewteen two points on the Earth surface.
 
-    Each point is defined by its latitide and longitude, in decimal degrees.
+    :input: two 2-tuples, containing the latitude and longitude of each point
+    in decimal degrees.
 
-    Returns the distance bewteen the two points, by default in kilometers,
-    or in miles if the ``miles`` parameter is set to True.
+    Example: haversine((45.7597, 4.8422), (48.8567, 2.3508))
+
+    :output: Returns the distance bewteen the two points.
+    The default unit is kilometers. Miles can be returned
+    if the ``miles`` parameter is set to True.
 
     """
     # unpack latitude/longitude
