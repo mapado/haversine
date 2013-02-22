@@ -50,11 +50,14 @@ def c_haversine(point1, point2, miles=False):
 # will refer to the pure C implementation
 # Otherwise, it will refer to the pure Python implementation
 try:
-    sopath = abspath(join(dirname(__file__), 'libhsine.so'))
+    # The .so will automatically be compiled at install and will be placed
+    # in the root of the virtualenv site packages directory
+    # hence the relative path
+    sopath = abspath(join(dirname(__file__), '..',  'libhsine.so'))
     dll = cdll.LoadLibrary(sopath)
     dll.haversine.restype = c_float
     dll.haversine.argtypes = [c_float, c_float, c_float, c_float, c_int]
     so_haversine = dll.haversine
     haversine = c_haversine
-except OSError:  # fail to load external
+except OSError:  # fail to load shared object, fall back on pure python implementation
     haversine = py_haversine
