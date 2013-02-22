@@ -1,5 +1,9 @@
-from setuptools import setup
+from distutils.core import setup, Extension
 
+c_haversine = Extension(
+    'libhsine',
+    sources=['haversine/haversine.c'],
+)
 
 setup(
         name='haversine',
@@ -23,5 +27,6 @@ setup(
                 'Programming Language :: Python :: 3.2',
                 'Programming Language :: Python :: 3.3',
                 'Topic :: Scientific/Engineering :: Mathematics'
-            ]
-)
+            ],
+        ext_modules=[c_haversine],
+        )
