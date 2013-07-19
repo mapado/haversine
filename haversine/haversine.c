@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 
-const float EARTH_RADIUS = 6367.5;
+const float EARTH_RADIUS = 6371.0;
 
 
 float deg_to_rad(float deg)
@@ -25,7 +25,7 @@ float haversine(float lat1, float lng1, float lat2, float lng2, int miles)
   a = sin(pow((dlat/2), 2) + cos(lat1)*cos(lat2)*pow(sin(dlng/2),2));
   d = 2 * EARTH_RADIUS * asin(sqrt(a));
   if (miles == 1){
-    return d * 0.6214;  // distance expressed in miles
+    return d * 0.621371;  // distance expressed in miles
   }
   else {
     return d;  // distance expressed in kilometers
