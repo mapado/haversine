@@ -2,7 +2,7 @@ from math import radians, cos, sin, asin, sqrt
 from ctypes import cdll, c_float, c_int
 from os.path import dirname, abspath, join
 
-AVG_EARTH_RADIUS = 6367.5  # in km
+AVG_EARTH_RADIUS = 6371  # in km
 
 
 def py_haversine(point1, point2, miles=False):
@@ -31,7 +31,7 @@ def py_haversine(point1, point2, miles=False):
     d = sin(lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(lng / 2) ** 2
     h = 2 * AVG_EARTH_RADIUS * asin(sqrt(d))
     if miles:
-        return h * 0.6214  # in miles
+        return h * 0.621371  # in miles
     else:
         return h  # in kilometers
 
