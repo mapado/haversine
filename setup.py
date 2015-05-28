@@ -7,7 +7,7 @@ c_haversine = Extension(
 
 setup(
     name='haversine',
-    version='0.3',
+    version='0.3.0',
     description='Calculate the distance bewteen 2 points on Earth.',
     long_description=open('README.txt').read(),
     author='Balthazar Rouberol',
