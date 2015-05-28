@@ -12,6 +12,8 @@ setup(
     long_description=open('README.txt').read(),
     author='Balthazar Rouberol',
     author_email=['balthazar@mapado.com'],
+    maintainer='Julien Deniau',
+    maintainer_email=['julien.deniau@mapado.com'],
     url='https://github.com/mapado/haversine',
     packages=['haversine'],
     license=['MIT'],
