@@ -1,13 +1,8 @@
 from distutils.core import setup, Extension
 
-c_haversine = Extension(
-    'libhsine',
-    sources=['haversine/haversine.c'],
-)
-
 setup(
     name='haversine',
-    version='0.4.1',
+    version='0.4.2',
     description='Calculate the distance bewteen 2 points on Earth.',
     long_description=open('README.txt').read(),
     author='Balthazar Rouberol',
@@ -31,5 +26,4 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Topic :: Scientific/Engineering :: Mathematics'
     ],
-    ext_modules=[c_haversine],
 )
