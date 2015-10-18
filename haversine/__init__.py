@@ -21,7 +21,7 @@ def haversine(point1, point2, miles=False):
     lat2, lng2 = point2
 
     # convert all latitudes/longitudes from decimal degrees to radians
-    lat1, lng1, lat2, lng2 = list(map(radians, [lat1, lng1, lat2, lng2]))
+    lat1, lng1, lat2, lng2 = map(radians, (lat1, lng1, lat2, lng2))
 
     # calculate haversine
     lat = lat2 - lat1
