@@ -2,7 +2,7 @@ from distutils.core import setup, Extension
 
 setup(
     name='haversine',
-    version='0.4.3',
+    version='0.4.4',
     description='Calculate the distance bewteen 2 points on Earth.',
     long_description=open('README.txt').read(),
     author='Balthazar Rouberol',
