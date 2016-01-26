@@ -26,7 +26,7 @@ def haversine(point1, point2, miles=False):
     # calculate haversine
     lat = lat2 - lat1
     lng = lng2 - lng1
-    d = sin(lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(lng / 2) ** 2
+    d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
     h = 2 * AVG_EARTH_RADIUS * asin(sqrt(d))
     if miles:
         return h * 0.621371  # in miles
