@@ -1,5 +1,5 @@
 # Haversine [![Build Status](https://travis-ci.org/mapado/haversine.svg?branch=master)](https://travis-ci.org/mapado/haversine)
-Calculate the distance (in km or in miles) bewteen two points on Earth,
+Calculate the distance (in km or in miles) between two points on Earth,
 located by their latitude and longitude.
 
 
