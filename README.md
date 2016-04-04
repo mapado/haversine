@@ -3,7 +3,7 @@ Calculate the distance (in km or in miles) between two points on Earth,
 located by their latitude and longitude.
 
 
-## Example: distance bewteen Lyon and Paris
+## Example: distance between Lyon and Paris
 ```python
 >>> from haversine import haversine
 >>> lyon = (45.7597, 4.8422)
