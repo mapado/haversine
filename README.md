@@ -6,7 +6,7 @@ located by their latitude and longitude.
 ## Example: distance between Lyon and Paris
 ```python
 >>> from haversine import haversine
->>> lyon = (45.7597, 4.8422)
+>>> lyon = (45.7597, 4.8422) # (lat, lon)
 >>> paris = (48.8567, 2.3508)
 >>> haversine(lyon, paris)
 392.21671780659625  # in kilometers
