@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='haversine',
-    version='0.4.5',
+    version='0.4.6',
     description='Calculate the distance between 2 points on Earth.',
     long_description=open('README.txt').read(),
     author='Balthazar Rouberol',
