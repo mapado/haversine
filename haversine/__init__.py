@@ -1,7 +1,7 @@
 from math import radians, cos, sin, asin, sqrt
 
 AVG_EARTH_RADIUS = 6371  # in km
-
+MILES_PER_KILOMETER = 0.621371
 
 def haversine(point1, point2, miles=False):
     """ Calculate the great-circle distance between two points on the Earth surface.
@@ -11,7 +11,7 @@ def haversine(point1, point2, miles=False):
 
     Example: haversine((45.7597, 4.8422), (48.8567, 2.3508))
 
-    :output: Returns the distance bewteen the two points.
+    :output: Returns the distance between the two points.
     The default unit is kilometers. Miles can be returned
     if the ``miles`` parameter is set to True.
 
@@ -29,7 +29,7 @@ def haversine(point1, point2, miles=False):
     d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
     h = 2 * AVG_EARTH_RADIUS * asin(sqrt(d))
     if miles:
-        return h * 0.621371  # in miles
+        return h * MILES_PER_KILOMETER # in miles
     else:
         return h  # in kilometers
 
