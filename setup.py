@@ -1,10 +1,11 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='haversine',
     version='0.5.0',
     description='Calculate the distance between 2 points on Earth.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
+    include_package_data=True,
     author='Balthazar Rouberol',
     author_email=['balthazar@mapado.com'],
     maintainer='Julien Deniau',
