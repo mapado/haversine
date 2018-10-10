@@ -24,3 +24,13 @@ haversine(lyon, paris, nmiles=True)
 ```bash
 $ pip install haversine
 ```
+## Contributing
+
+Clone the project
+
+Install [pipenv](https://github.com/pypa/pipenv).
+
+Run `pipenv install`
+
+Launch test with `pipenv run pytest`
+
