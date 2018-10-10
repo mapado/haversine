@@ -16,7 +16,7 @@ haversine(lyon, paris)
 haversine(lyon, paris, miles=True)
 # 243.71209416020253  # in miles
 
-haversine(lyon, paris, nmiles=True)
+haversine(lyon, paris, nautical_miles=True)
 # 211.7801622966963  # in nautical miles
 ```
 
