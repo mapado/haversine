@@ -5,6 +5,7 @@ setup(
     version='1.0.0',
     description='Calculate the distance between 2 points on Earth.',
     long_description=open('README.md').read(),
+    long_description_content_type="text/markdown",
     include_package_data=True,
     author='Balthazar Rouberol',
     author_email=['balthazar@mapado.com'],
