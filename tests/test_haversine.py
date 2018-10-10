@@ -6,3 +6,4 @@ def test_haversine():
 
     assert haversine(lyon, paris) == 392.21671780659625  # in kilometers
     assert haversine(lyon, paris, miles=True) == 243.71209416020253  # in miles
+    assert haversine(lyon, paris, nmiles=True) == 211.7801622966963  # in nautical miles
