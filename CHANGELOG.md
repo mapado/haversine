@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.1 - 2018-10-10
+
+fix wrong definition in setup.py
+
 ## 1.0.0 - 2018-10-10
 
 No changes, haversine package has been stable and functional for years now. Time to make a 1.0 version :)
