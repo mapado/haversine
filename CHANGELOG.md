@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.2 - 2018-13
+
+slightly better precision [#17](https://github.com/mapado/haversine/pull/17)
+
 ## 1.0.1 - 2018-10-10
 
 fix wrong definition in setup.py
