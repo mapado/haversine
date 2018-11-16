@@ -73,4 +73,5 @@ def inverse_haversine(point, distance, direction, miles=False, nautical_miles=Fa
         delta = 2 * asin(sqrt(d)/cos(return_lat))
         return_lng = lng1 - delta
 
-    return map(degrees, (return_lat, return_lng))
+    return_lat, return_lng = map(degrees, (return_lat, return_lng))
+    return return_lat, return_lng
