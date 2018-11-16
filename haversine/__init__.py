@@ -1,4 +1,4 @@
-from math import radians, cos, sin, asin, sqrt
+from math import degrees, radians, cos, sin, acos, asin, sqrt
 
 # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
 AVG_EARTH_RADIUS_KM = 6371.0088
@@ -38,3 +38,39 @@ def haversine(point1, point2, miles=False, nautical_miles=False):
     lng = lng2 - lng1
     d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
     return 2 * avg_earth_radius * asin(sqrt(d))
+
+
+def inverse_haversine(point, distance, direction, miles=False, nautical_miles=False):
+
+    if miles:
+        avg_earth_radius = AVG_EARTH_RADIUS_MI
+    elif nautical_miles:
+        avg_earth_radius = AVG_EARTH_RADIUS_NMI
+    else:
+        avg_earth_radius = AVG_EARTH_RADIUS_KM
+
+    lat1, lng1 = point
+    lat1, lng1 = map(radians, (lat1, lng1))
+    d = sin(distance / (2 * avg_earth_radius)) ** 2
+
+    if direction == "north":
+        return_lng = lng1
+        delta = acos((1 - 2 * d) / cos(return_lng - lng1))
+        return_lat = lat1 + delta
+
+    elif direction == "east":
+        return_lat = lat1
+        delta = 2 * asin(sqrt(d)/cos(return_lat))
+        return_lng = lng1 + delta
+
+    elif direction == "south":
+        return_lng = lng1
+        delta = acos((1 - 2 * d) / cos(return_lng - lng1))
+        return_lat = lat1 - delta
+
+    elif direction == "west":
+        return_lat = lat1
+        delta = 2 * asin(sqrt(d)/cos(return_lat))
+        return_lng = lng1 - delta
+
+    return map(degrees, (return_lat, return_lng))
