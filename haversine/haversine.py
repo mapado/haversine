@@ -1,11 +1,7 @@
 from math import radians, cos, sin, asin, sqrt
 
-# mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
-AVG_EARTH_RADIUS_KM = 6371.0088
-AVG_EARTH_RADIUS_MI = 3958.7613
-AVG_EARTH_RADIUS_NMI = 3440.0695
 
-def haversine(point1, point2, miles=False, nautical_miles=False):
+def haversine(point1, point2, unit='km'):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
     :input: two 2-tuples, containing the latitude and longitude of each point
@@ -18,13 +14,19 @@ def haversine(point1, point2, miles=False, nautical_miles=False):
     if the ``miles`` parameter is set to True.
 
     """
+    # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
+    AVG_EARTH_RADIUS_KM = 6371.0088
+
+    # Units values taken from http://www.unitconversion.org/unit_converter/length.html
+    conversions = {'km': 1,
+                   'm': 1000,
+                   'mi': 0.62137118693,
+                   'nmi': 0.53995679617,
+                   'ft': 3280.839895013,
+                   'in': 39370.078740158}
+
     # get earth radius in required units
-    if miles:
-        avg_earth_radius = AVG_EARTH_RADIUS_MI
-    elif nautical_miles:
-        avg_earth_radius = AVG_EARTH_RADIUS_NMI
-    else:
-        avg_earth_radius = AVG_EARTH_RADIUS_KM
+    avg_earth_radius = AVG_EARTH_RADIUS_KM * conversions[unit]
 
     # unpack latitude/longitude
     lat1, lng1 = point1
@@ -37,4 +39,5 @@ def haversine(point1, point2, miles=False, nautical_miles=False):
     lat = lat2 - lat1
     lng = lng2 - lng1
     d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
+
     return 2 * avg_earth_radius * asin(sqrt(d))
