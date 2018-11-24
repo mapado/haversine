@@ -7,11 +7,18 @@ def haversine(point1, point2, unit='km'):
     :input: two 2-tuples, containing the latitude and longitude of each point
     in decimal degrees.
 
+    Keyword arguments:
+    unit -- a string containing the initials of a unit of measurement (i.e. miles = mi)
+            default 'km' (kilometers).
+
     Example: haversine((45.7597, 4.8422), (48.8567, 2.3508))
 
     :output: Returns the distance between the two points.
-    The default unit is kilometers. Miles can be returned
-    if the ``miles`` parameter is set to True.
+
+    The default returned unit is kilometers. The default unit can be changed by
+    setting the unit parameter to a string containing the initials of the desired unit.
+    Other available units are miles (mi), nautic miles (nmi), meters (m),
+    feets (ft) and inches (in).
 
     """
     # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
