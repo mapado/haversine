@@ -7,7 +7,16 @@ def test_kilometers():
     assert haversine(lyon, paris) == 392.2172595594006  # in kilometers
 
 def test_miles():
-    assert haversine(lyon, paris, miles=True) == 243.7125041070121  # in miles
+    assert haversine(lyon, paris, unit='mi') == 243.71250609539814  # in miles
 
 def test_nautical_miles():
-    assert haversine(lyon, paris, nautical_miles=True) == 211.7803748731092  # in nautical miles
+    assert haversine(lyon, paris, unit='nmi') == 211.78037755311516  # in nautical miles
+
+def test_meters():
+    assert haversine(lyon, paris, unit='m') == 392217.2595594006
+
+def test_feets():
+    assert haversine(lyon, paris, unit='ft') == 1286802.0326751503
+
+def test_inches():
+    assert haversine(lyon, paris, unit='in') == 15441624.392102592
