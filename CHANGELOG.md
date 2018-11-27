@@ -1,6 +1,33 @@
 # CHANGELOG
 
-## 1.0.2 - 2018-13
+## 2.0.0 - 2018-11-27
+
+### Changed
+
+* Add a `unit` parameter accepting different units (`miles`, `meter`, `feet`, etc.)
+* [BREAKING] The `miles` and  `nautical_miles` parameters have been removed and replaced by the `unit` parameter. See [#20](https://github.com/mapado/haversine/pull/20)
+
+### How to upgrade
+
+If you did not use the `miles` or `nautical_miles`, you are good to go, this is non-breaking for you !
+
+If you did use `miles` or `nautical_miles`, you just need to do that: 
+
+```diff
+- haversine(lyon, paris, miles=True)
++ haversine(lyon, paris, unit='mi')
+```
+
+```diff
+- haversine(lyon, paris, nautical_miles=True)
++ haversine(lyon, paris, unit='nmi')
+```
+
+Du to a small change in the formula, the precision for miles aud nautical miles has slighty changed. 
+Example : distance between Lyon, France and Paris, France changed from `243.7125041070121 miles` to `243.71250609539814 miles`. Same for nautical miles.
+
+
+## 1.0.2 - 2018-10-13
 
 slightly better precision [#17](https://github.com/mapado/haversine/pull/17)
 
