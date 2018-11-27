@@ -27,7 +27,7 @@ def haversine(point1, point2, unit='km'):
     # Units values taken from http://www.unitconversion.org/unit_converter/length.html
     conversions = {'km': 1,
                    'm': 1000,
-                   'mi': 0.621369949,
+                   'mi': 0.621371192,
                    'nmi': 0.539956803,
                    'ft': 3280.839895013,
                    'in': 39370.078740158}
