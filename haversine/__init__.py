@@ -1,1 +1,1 @@
-from .haversine import haversine
+from .haversine import Units, haversine

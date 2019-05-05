@@ -1,7 +1,36 @@
 from math import radians, cos, sin, asin, sqrt
+from enum import Enum
 
 
-def haversine(point1, point2, unit='km'):
+# mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
+_AVG_EARTH_RADIUS_KM = 6371.0088
+
+
+class Units(Enum):
+    """
+    Enumeration of supported units.
+    The full list can be checked by iterating over the class; e.g.
+    the expression `tuple(Units)`.
+    """
+
+    KILOMETERS = 'km'
+    METERS = 'm'
+    MILES = 'mi'
+    NAUTICAL_MILES = 'nmi'
+    FEET = 'ft'
+    INCHES = 'in'
+
+
+# Units values taken from http://www.unitconversion.org/unit_converter/length.html
+_CONVERSIONS = {Units.KILOMETERS.value:       1.0,
+                Units.METERS.value:           1000.0,
+                Units.MILES.value:            0.621371192,
+                Units.NAUTICAL_MILES.value:   0.539956803,
+                Units.FEET.value:             3280.839895013,
+                Units.INCHES.value:           39370.078740158}
+
+
+def haversine(point1, point2, unit=Units.KILOMETERS):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
     :input: two 2-tuples, containing the latitude and longitude of each point
@@ -21,19 +50,10 @@ def haversine(point1, point2, unit='km'):
     feets (ft) and inches (in).
 
     """
-    # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
-    AVG_EARTH_RADIUS_KM = 6371.0088
-
-    # Units values taken from http://www.unitconversion.org/unit_converter/length.html
-    conversions = {'km': 1,
-                   'm': 1000,
-                   'mi': 0.621371192,
-                   'nmi': 0.539956803,
-                   'ft': 3280.839895013,
-                   'in': 39370.078740158}
 
     # get earth radius in required units
-    avg_earth_radius = AVG_EARTH_RADIUS_KM * conversions[unit]
+    unit = unit.value if isinstance(unit, Units) else unit
+    avg_earth_radius = _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
 
     # unpack latitude/longitude
     lat1, lng1 = point1
