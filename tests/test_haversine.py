@@ -1,22 +1,35 @@
-from haversine import haversine
+from haversine import haversine, Units
 
-lyon = (45.7597, 4.8422)
-paris = (48.8567, 2.3508)
+LYON = (45.7597, 4.8422)
+PARIS = (48.8567, 2.3508)
 
-def test_kilometers():
-    assert haversine(lyon, paris) == 392.2172595594006  # in kilometers
+EXPECTED = {Units.KILOMETERS: 392.2172595594006,
+            Units.METERS: 392217.2595594006,
+            Units.MILES: 243.71250609539814,
+            Units.NAUTICAL_MILES: 211.78037755311516,
+            Units.FEET: 1286802.0326751503,
+            Units.INCHES: 15441624.392102592}
 
-def test_miles():
-    assert haversine(lyon, paris, unit='mi') == 243.71250609539814  # in miles
 
-def test_nautical_miles():
-    assert haversine(lyon, paris, unit='nmi') == 211.78037755311516  # in nautical miles
+def haversine_test_factory(unit):
+    def test():
+        expected = EXPECTED[unit]
+        assert haversine(LYON, PARIS, unit=unit) == expected
+        assert isinstance(unit.value, str)
+        assert haversine(LYON, PARIS, unit=unit.value) == expected
 
-def test_meters():
-    assert haversine(lyon, paris, unit='m') == 392217.2595594006
+    return test
 
-def test_feets():
-    assert haversine(lyon, paris, unit='ft') == 1286802.0326751503
 
-def test_inches():
-    assert haversine(lyon, paris, unit='in') == 15441624.392102592
+test_kilometers = haversine_test_factory(Units.KILOMETERS)
+test_meters = haversine_test_factory(Units.METERS)
+test_miles = haversine_test_factory(Units.MILES)
+test_nautical_miles = haversine_test_factory(Units.NAUTICAL_MILES)
+test_feet = haversine_test_factory(Units.FEET)
+test_inches = haversine_test_factory(Units.INCHES)
+
+
+def test_units_enum():
+    from haversine.haversine import _CONVERSIONS
+    assert all(unit.value in _CONVERSIONS for unit in Units)
+
