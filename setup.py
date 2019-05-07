@@ -7,6 +7,8 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     include_package_data=True,
+    install_requires=['enum34;python_version<"3.4"'],
+
     author='Balthazar Rouberol',
     author_email='balthazar@mapado.com',
     maintainer='Julien Deniau',

@@ -1,39 +1,62 @@
 from math import radians, cos, sin, asin, sqrt
+from enum import Enum
 
 
-def haversine(point1, point2, unit='km'):
+# mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
+_AVG_EARTH_RADIUS_KM = 6371.0088
+
+
+class Units(Enum):
+    """
+    Enumeration of supported units.
+    The full list can be checked by iterating over the class; e.g.
+    the expression `tuple(Units)`.
+    """
+
+    KILOMETERS = 'km'
+    METERS = 'm'
+    MILES = 'mi'
+    NAUTICAL_MILES = 'nmi'
+    FEET = 'ft'
+    INCHES = 'in'
+
+
+# Units values taken from http://www.unitconversion.org/unit_converter/length.html
+_CONVERSIONS = {Units.KILOMETERS.value:       1.0,
+                Units.METERS.value:           1000.0,
+                Units.MILES.value:            0.621371192,
+                Units.NAUTICAL_MILES.value:   0.539956803,
+                Units.FEET.value:             3280.839895013,
+                Units.INCHES.value:           39370.078740158}
+
+
+def haversine(point1, point2, unit=Units.KILOMETERS):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
-    :input: two 2-tuples, containing the latitude and longitude of each point
-    in decimal degrees.
+    Takes two 2-tuples, containing the latitude and longitude of each point in decimal degrees,
+    and, optionally, a unit of length.
 
-    Keyword arguments:
-    unit -- a string containing the initials of a unit of measurement (i.e. miles = mi)
-            default 'km' (kilometers).
+    :param point1: first point; tuple of (latitude, longitude) in decimal degrees
+    :param point2: second point; tuple of (latitude, longitude) in decimal degrees
+    :param unit: a member of haversine.Units, or, equivalently, a string containing the
+                 initials of its corresponding unit of measurement (i.e. miles = mi)
+                 default 'km' (kilometers).
 
-    Example: haversine((45.7597, 4.8422), (48.8567, 2.3508))
+    Example: ``haversine((45.7597, 4.8422), (48.8567, 2.3508), unit=Units.METERS)``
 
-    :output: Returns the distance between the two points.
+    Precondition: ``unit`` is a supported unit (supported units are listed in the `Units` enum)
+
+    :return: the distance between the two points in the requested unit, as a float.
 
     The default returned unit is kilometers. The default unit can be changed by
-    setting the unit parameter to a string containing the initials of the desired unit.
-    Other available units are miles (mi), nautic miles (nmi), meters (m),
-    feets (ft) and inches (in).
-
+    setting the unit parameter to a member of ``haversine.Units``
+    (e.g. ``haversine.Units.INCHES``), or, equivalently, to a string containing the
+    corresponding abbreviation (e.g. 'in'). All available units can be found in the ``Units`` enum.
     """
-    # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
-    AVG_EARTH_RADIUS_KM = 6371.0088
-
-    # Units values taken from http://www.unitconversion.org/unit_converter/length.html
-    conversions = {'km': 1,
-                   'm': 1000,
-                   'mi': 0.621371192,
-                   'nmi': 0.539956803,
-                   'ft': 3280.839895013,
-                   'in': 39370.078740158}
 
     # get earth radius in required units
-    avg_earth_radius = AVG_EARTH_RADIUS_KM * conversions[unit]
+    unit = unit.value if isinstance(unit, Units) else unit
+    avg_earth_radius = _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
 
     # unpack latitude/longitude
     lat1, lng1 = point1
