@@ -31,5 +31,5 @@ test_inches = haversine_test_factory(Units.INCHES)
 
 def test_units_enum():
     from haversine.haversine import _CONVERSIONS
-    assert all(unit.value in _CONVERSIONS for unit in Units)
+    assert all(unit in _CONVERSIONS for unit in Units)
 

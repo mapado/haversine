@@ -22,12 +22,12 @@ class Units(Enum):
 
 
 # Units values taken from http://www.unitconversion.org/unit_converter/length.html
-_CONVERSIONS = {Units.KILOMETERS.value:       1.0,
-                Units.METERS.value:           1000.0,
-                Units.MILES.value:            0.621371192,
-                Units.NAUTICAL_MILES.value:   0.539956803,
-                Units.FEET.value:             3280.839895013,
-                Units.INCHES.value:           39370.078740158}
+_CONVERSIONS = {Units.KILOMETERS:       1.0,
+                Units.METERS:           1000.0,
+                Units.MILES:            0.621371192,
+                Units.NAUTICAL_MILES:   0.539956803,
+                Units.FEET:             3280.839895013,
+                Units.INCHES:           39370.078740158}
 
 
 def haversine(point1, point2, unit=Units.KILOMETERS):
@@ -55,7 +55,7 @@ def haversine(point1, point2, unit=Units.KILOMETERS):
     """
 
     # get earth radius in required units
-    unit = unit.value if isinstance(unit, Units) else unit
+    unit = Units(unit)
     avg_earth_radius = _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
 
     # unpack latitude/longitude
