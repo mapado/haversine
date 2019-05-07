@@ -5,6 +5,7 @@ name = "pypi"
 
 [dev-packages]
 pytest = {version = "~=3.9"}
+twine = {index = "https://devpi.mapado.com:444/devteam/dev/+simple", version = "*"}
 
 [packages]
 
