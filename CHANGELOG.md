@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.1.0 - 2019-05-07
+
+General refactor: use Enum for available units, extract constants [#22](https://github.com/mapado/haversine/pull/22) — Paolo Lammens
+
 ## 2.0.0 - 2018-11-27
 
 ### Changed
