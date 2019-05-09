@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.1.1 - 2019-05-07
+
+Quick improvement left out at [#22](https://github.com/mapado/haversine/pull/22)
+Renamed Units to Unit along the way, to comply with conventions (Breaking if you were on 2.1.0)
+
+See more: [#23](https://github.com/mapado/haversine/pull/23) — Paolo Lammens
+
 ## 2.1.0 - 2019-05-07
 
 General refactor: use Enum for available units, extract constants [#22](https://github.com/mapado/haversine/pull/22) — Paolo Lammens
