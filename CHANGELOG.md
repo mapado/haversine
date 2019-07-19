@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.1.2 - 2019-07-19
+
+Fix typo in documentation
+
 ## 2.1.1 - 2019-05-07
 
 Quick improvement left out at [#22](https://github.com/mapado/haversine/pull/22)
