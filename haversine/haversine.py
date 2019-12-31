@@ -119,4 +119,4 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS):
     d = (numpy.sin(lat * 0.5) ** 2
          + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin(lng * 0.5) ** 2)
 
-    return 2 * avg_earth_radius * numpy.arcsin(sqrt(d))
+    return 2 * avg_earth_radius * numpy.arcsin(numpy.sqrt(d))
