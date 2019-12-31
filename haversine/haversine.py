@@ -74,3 +74,49 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
     d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
 
     return 2 * avg_earth_radius * asin(sqrt(d))
+
+
+def haversine_vector(array1, array2, unit=Unit.KILOMETERS):
+	'''
+	Essentially the same function as "haversine", except that this
+	version replaces math functions with numpy functions.
+	This may make it slightly slower for computing the haversine
+	distance between two points, but is much faster for computing
+	the distance between two vectors of points due to vectorization.
+	'''
+    try:
+        import numpy
+    except ModuleNotFoundError:
+        return 'Error, unable to import Numpy,\
+        consider using haversine instead of haversine_vector.'
+
+    # get earth radius in required units
+    unit = Unit(unit)
+    avg_earth_radius = _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
+
+    # ensure arrays are numpy ndarrays
+    if not isinstance(array1, numpy.ndarray):
+        array1 = numpy.array(array1)
+    if not isinstance(array2, numpy.ndarray):
+        array2 = numpy.array(array2)
+
+    # ensure will be able to iterate over rows by adding dimension if needed
+    if len(array1.shape) == 1:
+        array1 = numpy.expand_dims(array1, 0)
+    if len(array2.shape) == 1:
+        array2 = numpy.expand_dims(array2, 0)
+
+    # unpack latitude/longitude
+    lat1, lng1 = array1[:, 0], array1[:, 1]
+    lat2, lng2 = array2[:, 0], array2[:, 1]
+
+    # convert all latitudes/longitudes from decimal degrees to radians
+    lat1, lng1, lat2, lng2 = map(numpy.radians, (lat1, lng1, lat2, lng2))
+
+    # calculate haversine
+    lat = lat2 - lat1
+    lng = lng2 - lng1
+    d = (numpy.sin(lat * 0.5) ** 2
+         + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin(lng * 0.5) ** 2)
+
+    return 2 * avg_earth_radius * numpy.arcsin(sqrt(d))
