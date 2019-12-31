@@ -74,13 +74,13 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
 
 
 def haversine_vector(array1, array2, unit=Unit.KILOMETERS):
-	'''
-	Essentially the same function as "haversine", except that this
-	version replaces math functions with numpy functions.
-	This may make it slightly slower for computing the haversine
-	distance between two points, but is much faster for computing
-	the distance between two vectors of points due to vectorization.
-	'''
+    '''
+    The exact same function as "haversine", except that this
+    version replaces math functions with numpy functions.
+    This may make it slightly slower for computing the haversine
+    distance between two points, but is much faster for computing
+    the distance between two vectors of points due to vectorization.
+    '''
     try:
         import numpy
     except ModuleNotFoundError:
