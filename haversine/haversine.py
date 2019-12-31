@@ -101,9 +101,9 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS):
         array2 = numpy.array(array2)
 
     # ensure will be able to iterate over rows by adding dimension if needed
-    if len(array1.shape) == 1:
+    if array1.ndim == 1:
         array1 = numpy.expand_dims(array1, 0)
-    if len(array2.shape) == 1:
+    if array2.ndim == 1:
         array2 = numpy.expand_dims(array2, 0)
 
     # unpack latitude/longitude
