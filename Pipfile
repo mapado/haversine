@@ -5,5 +5,6 @@ name = "pypi"
 
 [dev-packages]
 pytest = {version = "~=3.9"}
+numpy = "*"
 
 [packages]
