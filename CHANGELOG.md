@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.2.0
+
+### Added 
+
+- Added the `haversine_vector` function (thanks to [ccforgy](https://github.com/ccforgy)) [#26](https://github.com/mapado/haversine/pull/26)
+
+### Changed
+
+- Improve performance thanks to [adamchainz](https://github.com/adamchainz) [#27](https://github.com/mapado/haversine/pull/27)
+
 ## 2.1.2 - 2019-07-19
 
 Fix typo in documentation
