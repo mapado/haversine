@@ -83,10 +83,10 @@ haversine_vector([lyon, london], [paris, new_york], Unit.KILOMETERS)
  	  [6163.43638211 5586.48447423]])
 ```
 The output array from the example above returns the following table:
-|   |Paris|New York
+|   |Paris|New York|
 |---|:---:|:---:|
-Lyon|Lyon <\-> Paris|Lyon <\-> New York
-London|London <\-> Paris|London <\-> New York
+Lyon|Lyon <\-> Paris|Lyon <\-> New York|
+London|London <\-> Paris|London <\-> New York|
 By definition, if you have a vector *a* with _n_ elements, and a vector *b* with _m_ elements. The result matrix *M* would be $n x m$ and a element M\[i,j\] from the matrix would be the distance between the ith coordinate from vector *a* and jth coordinate with vector *b*.
 
 ## Contributing
