@@ -1,8 +1,14 @@
 # CHANGELOG
 
+## 2.3.0
+
+### Added
+
+- Added the `comb` parameter for `haversine_vector` (thanks to [Fd-3741](https://github.com/Fd-3741)) [#34](https://github.com/mapado/haversine/pull/34)
+
 ## 2.2.0
 
-### Added 
+### Added
 
 - Added the `haversine_vector` function (thanks to [ccforgy](https://github.com/ccforgy)) [#26](https://github.com/mapado/haversine/pull/26)
 
@@ -29,14 +35,14 @@ General refactor: use Enum for available units, extract constants [#22](https://
 
 ### Changed
 
-* Add a `unit` parameter accepting different units (`miles`, `meter`, `feet`, etc.)
-* [BREAKING] The `miles` and  `nautical_miles` parameters have been removed and replaced by the `unit` parameter. See [#20](https://github.com/mapado/haversine/pull/20)
+- Add a `unit` parameter accepting different units (`miles`, `meter`, `feet`, etc.)
+- [BREAKING] The `miles` and `nautical_miles` parameters have been removed and replaced by the `unit` parameter. See [#20](https://github.com/mapado/haversine/pull/20)
 
 ### How to upgrade
 
 If you did not use the `miles` or `nautical_miles`, you are good to go, this is non-breaking for you !
 
-If you did use `miles` or `nautical_miles`, you just need to do that: 
+If you did use `miles` or `nautical_miles`, you just need to do that:
 
 ```diff
 - haversine(lyon, paris, miles=True)
@@ -48,9 +54,8 @@ If you did use `miles` or `nautical_miles`, you just need to do that:
 + haversine(lyon, paris, unit='nmi')
 ```
 
-Du to a small change in the formula, the precision for miles aud nautical miles has slighty changed. 
+Du to a small change in the formula, the precision for miles aud nautical miles has slighty changed.
 Example : distance between Lyon, France and Paris, France changed from `243.7125041070121 miles` to `243.71250609539814 miles`. Same for nautical miles.
-
 
 ## 1.0.2 - 2018-10-13
 
