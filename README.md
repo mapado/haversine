@@ -43,7 +43,7 @@ print(tuple(haversine.Unit))
 outputs
 
 ```text
-(<Unit.FEET: 'ft'>, <Unit.INCHES: 'in'>, <Unit.KILOMETERS: 'km'>, 
+(<Unit.FEET: 'ft'>, <Unit.INCHES: 'in'>, <Unit.KILOMETERS: 'km'>,
  <Unit.METERS: 'm'>, <Unit.MILES: 'mi'>, <Unit.NAUTICAL_MILES: 'nmi'>)
 ```
 
@@ -67,7 +67,9 @@ haversine_vector([lyon, lyon], [paris, new_york], Unit.KILOMETERS)
 
 It is generally slower to use `haversine_vector` to get distance between two points, but can be really fast to compare distances between two vectors.
 
-You can generate a matrix of all combinations between coordinates in different vectors by setting 'comb' parameter as True.
+### Combine matrix
+
+You can generate a matrix of all combinations between coordinates in different vectors by setting `comb` parameter as True.
 
 ```python
 from haversine import haversine_vector, Unit
@@ -77,19 +79,20 @@ london = (51.509865, -0.118092)
 paris = (48.8567, 2.3508)
 new_york = (40.7033962, -74.2351462)
 
-haversine_vector([lyon, london], [paris, new_york], Unit.KILOMETERS)
+haversine_vector([lyon, london], [paris, new_york], Unit.KILOMETERS, comb=True)
 
->> array([[ 392.21725956  343.37455271]
- 	  [6163.43638211 5586.48447423]])
+>> array([[ 392.21725956,  343.37455271],
+ 	  [6163.43638211, 5586.48447423]])
 ```
+
 The output array from the example above returns the following table:
 
-|   |Paris|New York|
-|---|:---:|:---:|
-|Lyon|Lyon <\-> Paris|Lyon <\-> New York|
-|London|London <\-> Paris|London <\-> New York|
+|        |       Paris       |       New York       |
+| ------ | :---------------: | :------------------: |
+| Lyon   |  Lyon <\-> Paris  |  Lyon <\-> New York  |
+| London | London <\-> Paris | London <\-> New York |
 
-By definition, if you have a vector *a* with _n_ elements, and a vector *b* with _m_ elements. The result matrix *M* would be $n x m$ and a element M\[i,j\] from the matrix would be the distance between the ith coordinate from vector *a* and jth coordinate with vector *b*.
+By definition, if you have a vector _a_ with _n_ elements, and a vector _b_ with _m_ elements. The result matrix _M_ would be $n x m$ and a element M\[i,j\] from the matrix would be the distance between the ith coordinate from vector _a_ and jth coordinate with vector _b_.
 
 ## Contributing
 
