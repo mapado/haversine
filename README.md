@@ -1,6 +1,5 @@
 # Haversine [![Build Status](https://travis-ci.org/mapado/haversine.svg?branch=master)](https://travis-ci.org/mapado/haversine)
-
-Calculate the distance (in various units) between two points on Earth using their latitude and longitude.
+This is a program writen in python and it can calculate the distance (in various units) between any two points on earth by using thei latitude and logitude.
 
 ## Installation
 
