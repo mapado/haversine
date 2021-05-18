@@ -1,6 +1,4 @@
 ---
-sudo: false
-
 dist: xenial   # required for Python >= 3.7
 language: python
 matrix:
@@ -8,8 +6,6 @@ matrix:
     - name: 'Python 2.7'
       python: '2.7'
       env: RESET_PIPENV=yes
-    - name: 'Python 3.5'
-      python: '3.5'
     - name: 'Python 3.6'
       python: '3.6'
     - name: 'Python 3.7'
