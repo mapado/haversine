@@ -15,7 +15,7 @@ setup(
     maintainer_email='julien.deniau@mapado.com',
     url='https://github.com/mapado/haversine',
     packages=['haversine'],
-    license=['MIT'],
+    license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
