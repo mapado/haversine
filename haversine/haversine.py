@@ -1,5 +1,6 @@
-from math import radians, cos, sin, asin, sqrt
+from math import radians, cos, sin, asin, sqrt, degrees, pi, atan2
 from enum import Enum
+from typing import Union
 
 
 # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
@@ -21,17 +22,39 @@ class Unit(Enum):
     INCHES = 'in'
 
 
+class Direction(Enum):
+    """
+    Enumeration of supported directions.
+    The full list can be checked by iterating over the class; e.g.
+    the expression `tuple(Direction)`.
+    Angles expressed in radians.
+    """
+
+    NORTH = 0
+    NORTHEAST = pi * 0.25
+    EAST = pi * 0.5
+    SOUTHEAST = pi * 0.75
+    SOUTH = pi
+    SOUTHWEST = pi * 1.25
+    WEST = pi * 1.5
+    NORTHWEST = pi * 1.75
+
+
 # Unit values taken from http://www.unitconversion.org/unit_converter/length.html
-_CONVERSIONS = {Unit.KILOMETERS:       1.0,
-                Unit.METERS:           1000.0,
-                Unit.MILES:            0.621371192,
-                Unit.NAUTICAL_MILES:   0.539956803,
-                Unit.FEET:             3280.839895013,
-                Unit.INCHES:           39370.078740158}
+_CONVERSIONS = {
+    Unit.KILOMETERS:       1.0,
+    Unit.METERS:           1000.0,
+    Unit.MILES:            0.621371192,
+    Unit.NAUTICAL_MILES:   0.539956803,
+    Unit.FEET:             3280.839895013,
+    Unit.INCHES:           39370.078740158
+}
+
 
 def get_avg_earth_radius(unit):
     unit = Unit(unit)
     return _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
+
 
 def haversine(point1, point2, unit=Unit.KILOMETERS):
     """ Calculate the great-circle distance between two points on the Earth surface.
@@ -118,11 +141,11 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
 
     # If in combination mode, turn coordinates of array1 into column vectors for broadcasting
     if comb:
-        lat1 = numpy.expand_dims(lat1,axis=0)
-        lng1 = numpy.expand_dims(lng1,axis=0)
-        lat2 = numpy.expand_dims(lat2,axis=1)
-        lng2 = numpy.expand_dims(lng2,axis=1)
-    
+        lat1 = numpy.expand_dims(lat1, axis=0)
+        lng1 = numpy.expand_dims(lng1, axis=0)
+        lat2 = numpy.expand_dims(lat2, axis=1)
+        lng2 = numpy.expand_dims(lng2, axis=1)
+
     # calculate haversine
     lat = lat2 - lat1
     lng = lng2 - lng1
@@ -130,3 +153,18 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
          + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin(lng * 0.5) ** 2)
 
     return 2 * get_avg_earth_radius(unit) * numpy.arcsin(numpy.sqrt(d))
+
+
+def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
+
+    lat, lng = point
+    lat, lng = map(radians, (lat, lng))
+    d = distance
+    r = get_avg_earth_radius(unit)
+    brng = direction.value if isinstance(direction, Direction) else direction
+
+    return_lat = asin(sin(lat) * cos(d / r) + cos(lat) * sin(d / r) * cos(brng))
+    return_lng = lng + atan2(sin(brng) * sin(d / r) * cos(lat), cos(d / r) - sin(lat) * sin(return_lat))
+
+    return_lat, return_lng = map(degrees, (return_lat, return_lng))
+    return return_lat, return_lng
