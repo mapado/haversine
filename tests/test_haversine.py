@@ -1,4 +1,5 @@
 from haversine import haversine, haversine_vector, Unit
+from math import pi
 from numpy.testing import assert_allclose
 
 LYON = (45.7597, 4.8422)
@@ -11,7 +12,9 @@ EXPECTED_LYON_PARIS = {Unit.KILOMETERS: 392.2172595594006,
             Unit.MILES: 243.71250609539814,
             Unit.NAUTICAL_MILES: 211.78037755311516,
             Unit.FEET: 1286802.0326751503,
-            Unit.INCHES: 15441624.392102592}
+            Unit.INCHES: 15441624.392102592,
+            Unit.RADIANS: 0.061562818679421795,
+            Unit.DEGREES: 3.5272896852600164}
 
 
 def haversine_test_factory(unit):
@@ -30,6 +33,8 @@ test_miles = haversine_test_factory(Unit.MILES)
 test_nautical_miles = haversine_test_factory(Unit.NAUTICAL_MILES)
 test_feet = haversine_test_factory(Unit.FEET)
 test_inches = haversine_test_factory(Unit.INCHES)
+test_radians = haversine_test_factory(Unit.RADIANS)
+test_degrees = haversine_test_factory(Unit.DEGREES)
 
 
 def test_units_enum():
@@ -44,3 +49,11 @@ def test_haversine_vector_comb():
         haversine_vector([LYON, LONDON], [PARIS, NEW_YORK], Unit.KILOMETERS, comb=True),
         expected
     )
+
+def test_haversine_deg_rad():
+    """
+    Test makes sure that one time around earth matches sphere circumference in degrees / radians.
+    """
+    p1, p2 = (45, 0), (-45, 180)
+    assert haversine(p1, p2, unit=Unit.RADIANS) == pi
+    assert round(haversine(p1, p2, unit=Unit.DEGREES), 13) == 180.0
