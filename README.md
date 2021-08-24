@@ -4,8 +4,8 @@ Calculate the distance (in various units) between two points on Earth using thei
 
 ## Installation
 
-```bash
-$ pip install haversine
+```sh
+pip install haversine
 ```
 
 ## Usage
