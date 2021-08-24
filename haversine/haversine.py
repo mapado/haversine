@@ -20,6 +20,8 @@ class Unit(Enum):
     NAUTICAL_MILES = 'nmi'
     FEET = 'ft'
     INCHES = 'in'
+    RADIANS = 'rad'
+    DEGREES = 'deg'
 
 
 class Direction(Enum):
@@ -47,7 +49,9 @@ _CONVERSIONS = {
     Unit.MILES:            0.621371192,
     Unit.NAUTICAL_MILES:   0.539956803,
     Unit.FEET:             3280.839895013,
-    Unit.INCHES:           39370.078740158
+    Unit.INCHES:           39370.078740158,
+    Unit.RADIANS:          1/_AVG_EARTH_RADIUS_KM,
+    Unit.DEGREES:          (1/_AVG_EARTH_RADIUS_KM)*(180.0/pi)
 }
 
 

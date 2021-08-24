@@ -43,8 +43,9 @@ print(tuple(haversine.Unit))
 outputs
 
 ```text
-(<Unit.FEET: 'ft'>, <Unit.INCHES: 'in'>, <Unit.KILOMETERS: 'km'>,
- <Unit.METERS: 'm'>, <Unit.MILES: 'mi'>, <Unit.NAUTICAL_MILES: 'nmi'>)
+(<Unit.KILOMETERS: 'km'>, <Unit.METERS: 'm'>, <Unit.MILES: 'mi'>,
+ <Unit.NAUTICAL_MILES: 'nmi'>, <Unit.FEET: 'ft'>, <Unit.INCHES: 'in'>,
+ <Unit.RADIANS: 'rad'>, <Unit.DEGREES: 'deg'>)
 ```
 
 ### Inverse Haversine Formula
