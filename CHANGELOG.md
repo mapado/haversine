@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.4.0
+
+- Added inver haversine functionality [#39](https://github.com/mapado/haversine/pull/39) by [@CrapsJeroen](https://github.com/CrapsJeroen)
+- Adds radians and degrees units [#40](https://github.com/mapado/haversine/pull/40) by [@https://github.com/merschformann](https://github.com/merschformann)
+
+
+## 2.3.1
+
+- Fix license in setup.py [#38](https://github.com/mapado/haversine/pull/38) by [@kraj](https://github.com/kraj)
+
 ## 2.3.0
 
 ### Added
