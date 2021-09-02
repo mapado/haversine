@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.5.0
+
+- [Minor break] Drop support for python 2.7
+
 ## 2.4.1
 
 - Fix issue with python 2.7 compatibily. See [#41](https://github.com/mapado/haversine/issues/41)
