@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.4.1
+
+- Fix issue with python 2.7 compatibily. See [#41](https://github.com/mapado/haversine/issues/41)
 ## 2.4.0
 
 - Added inver haversine functionality [#39](https://github.com/mapado/haversine/pull/39) by [@CrapsJeroen](https://github.com/CrapsJeroen)
