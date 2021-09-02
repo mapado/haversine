@@ -2,7 +2,7 @@
 
 ## 2.5.0
 
-- [Minor break] Drop support for python 2.7
+- [Minor break] Drop support for python 2.7 [#42](https://github.com/mapado/haversine/pull/42)
 
 ## 2.4.1
 
