@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.5.1
+
+- Reset type hinting for `inverse_haversine`
+
 ## 2.5.0
 
 - [Minor break] Drop support for python 2.7 [#42](https://github.com/mapado/haversine/pull/42)

@@ -159,7 +159,7 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
     return 2 * get_avg_earth_radius(unit) * numpy.arcsin(numpy.sqrt(d))
 
 
-def inverse_haversine(point, distance, direction, unit=Unit.KILOMETERS):
+def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
 
     lat, lng = point
     lat, lng = map(radians, (lat, lng))
