@@ -1,4 +1,4 @@
-# Haversine [![Build Status](https://travis-ci.org/mapado/haversine.svg?branch=master)](https://travis-ci.org/mapado/haversine)
+# Haversine
 
 Calculate the distance (in various units) between two points on Earth using their latitude and longitude.
 
