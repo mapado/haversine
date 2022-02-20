@@ -1,42 +1,37 @@
 from haversine import haversine_vector, Unit
+from numpy.testing import assert_allclose
 
-LYON = (45.7597, 4.8422)
-PARIS = (48.8567, 2.3508)
-NEW_YORK = (40.7033962, -74.2351462)
+from tests.geo_ressources import EXPECTED_LONDON_PARIS, EXPECTED_LYON_NEW_YORK, EXPECTED_LYON_PARIS, EXPECTED_LONDON_NEW_YORK, LYON, PARIS, NEW_YORK, LONDON
 
-EXPECTED_LYON_PARIS = {Unit.KILOMETERS: 392.2172595594006,
-            Unit.METERS: 392217.2595594006,
-            Unit.MILES: 243.71250609539814,
-            Unit.NAUTICAL_MILES: 211.78037755311516,
-            Unit.FEET: 1286802.0326751503,
-            Unit.INCHES: 15441624.392102592,
-            Unit.RADIANS: 0.386810597795104,
-            Unit.DEGREES: 22.162614724591847}
-EXPECTED_LYON_NEW_YORK = {Unit.KILOMETERS: 6163.43638211,
-            Unit.METERS: 61634363.8211 }
-EXPECTED_PARIS_NEW_YORK = {Unit.KILOMETERS: 5853.32898662,
-            Unit.METERS: 58533289.8662 }
-
-
-def haversine_test_factory(unit):
-    def test():
+def test_pair(unit):
+    def test_lyon_paris(unit):
         expected_lyon_paris = EXPECTED_LYON_PARIS[unit]
-        expected_lyon_new_york = EXPECTED_LYON_NEW_YORK[unit]
-        expected_paris_new_york = EXPECTED_PARIS_NEW_YORK[unit]
-
         assert haversine_vector(LYON, PARIS, unit=unit) == expected_lyon_paris
         assert isinstance(unit.value, str)
         assert haversine_vector(LYON, PARIS, unit=unit.value) == expected_lyon_paris
 
-    return test
+    return test_lyon_paris(unit)
 
 
-test_kilometers = haversine_test_factory(Unit.KILOMETERS)
-test_meters = haversine_test_factory(Unit.METERS)
+def test_haversine_vector_comb():
+    unit = Unit.KILOMETERS
+    expected = [
+        [EXPECTED_LYON_PARIS[unit],  EXPECTED_LONDON_PARIS[unit]],
+        [EXPECTED_LYON_NEW_YORK[unit], EXPECTED_LONDON_NEW_YORK[unit]]
+    ]
 
+    assert_allclose( # See https://numpy.org/doc/stable/reference/generated/numpy.testing.assert_allclose.html#numpy.testing.assert_allclose
+        haversine_vector([LYON, LONDON], [PARIS, NEW_YORK], unit, comb=True),
+        expected
+    )
+
+test_pair(Unit.KILOMETERS)
+test_pair(Unit.METERS)
+test_pair(Unit.INCHES)
+test_haversine_vector_comb()
 
 def test_units_enum():
     from haversine.haversine import _CONVERSIONS
     assert all(unit in _CONVERSIONS for unit in Unit)
 
-
+test_units_enum()
