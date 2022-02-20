@@ -1,8 +1,12 @@
 from haversine import haversine_vector, Unit
 from numpy.testing import assert_allclose
+import pytest
 
 from tests.geo_ressources import EXPECTED_LONDON_PARIS, EXPECTED_LYON_NEW_YORK, EXPECTED_LYON_PARIS, EXPECTED_LONDON_NEW_YORK, LYON, PARIS, NEW_YORK, LONDON
 
+@pytest.mark.parametrize(
+    'unit', [Unit.KILOMETERS, Unit.METERS, Unit.INCHES]
+)
 def test_pair(unit):
     def test_lyon_paris(unit):
         expected_lyon_paris = EXPECTED_LYON_PARIS[unit]
@@ -25,13 +29,6 @@ def test_haversine_vector_comb():
         expected
     )
 
-test_pair(Unit.KILOMETERS)
-test_pair(Unit.METERS)
-test_pair(Unit.INCHES)
-test_haversine_vector_comb()
-
 def test_units_enum():
     from haversine.haversine import _CONVERSIONS
     assert all(unit in _CONVERSIONS for unit in Unit)
-
-test_units_enum()
