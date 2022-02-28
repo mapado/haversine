@@ -3,11 +3,7 @@ from numpy import isclose
 from math import pi
 import pytest
 
-LYON = (45.7597, 4.8422)
-PARIS = (48.8567, 2.3508)
-LONDON = (51.509865, -0.118092)
-NEW_YORK = (40.7033962, -74.2351462)
-
+from tests.geo_ressources import LYON, PARIS, NEW_YORK, LONDON
 
 @pytest.mark.parametrize(
     "point, dir, dist, result",
