@@ -48,6 +48,16 @@ outputs
  <Unit.RADIANS: 'rad'>, <Unit.DEGREES: 'deg'>)
 ```
 
+
+#### Note for radians and degrees
+
+The radian and degrees returns the [great circle distance](https://en.wikipedia.org/wiki/Great-circle_distance) between two points on a sphere.
+
+Notes:
+
+  - on a unit-sphere the angular distance in radians equals the distance between the two points on the sphere (definition of radians)
+  - When using "degree", this angle is just converted from radians to degrees
+
 ### Inverse Haversine Formula
 Calculates a point from a given vector (distance and direction) and start point.
 Currently explicitly supports both cardinal (north, east, south, west) and intercardinal (northeast, southeast, southwest, northwest) directions.

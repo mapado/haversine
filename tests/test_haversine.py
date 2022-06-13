@@ -35,3 +35,11 @@ def test_haversine_deg_rad():
     p1, p2 = (45, 0), (-45, 180)
     assert haversine(p1, p2, unit=Unit.RADIANS) == pi
     assert round(haversine(p1, p2, unit=Unit.DEGREES), 13) == 180.0
+
+def test_haversine_deg_rad_great_circle_distance():
+    """
+    Test makes sure the haversine functions returns the great circle distance (https://en.wikipedia.org/wiki/Great-circle_distance) between two points on a sphere.
+    See https://github.com/mapado/haversine/issues/45
+    """
+    p1, p2 = (0, -45), (0, 45)
+    assert haversine(p1, p2, Unit.DEGREES) == 89.99999999999997
