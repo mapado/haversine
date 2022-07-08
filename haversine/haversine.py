@@ -1,6 +1,6 @@
 from math import radians, cos, sin, asin, sqrt, degrees, pi, atan2
 from enum import Enum
-from typing import Union
+from typing import Union, Tuple
 
 
 # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
@@ -60,6 +60,18 @@ def get_avg_earth_radius(unit):
     return _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
 
 
+def normalize(lat: float, lon: float) -> Tuple[float, float]:
+    """
+    Normalize point to [-90, 90] latitude and [-180, 180] longitude.
+    """
+    lat = (lat + 90) % 360 - 90
+    if lat > 90:
+        lat = 180 - lat
+        lon += 180
+    lon = (lon + 180) % 360 - 180
+    return lat, lon
+
+
 def haversine(point1, point2, unit=Unit.KILOMETERS):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
@@ -88,9 +100,9 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
     lat1, lng1 = point1
     lat2, lng2 = point2
 
-    # normalize latitude to [-90, 90] and longitude to [-180, 180] ranges
-    lat1, lat2 = (lat1 + 90) % 180 - 90, (lat2 + 90) % 180 - 90
-    lng1, lng2 = (lng1 + 180) % 360 - 180, (lng2 + 180) % 360 - 180
+    # normalize points
+    lat1, lng1 = normalize(lat1, lng1)
+    lat2, lng2 = normalize(lat2, lng2)
 
     # convert all latitudes/longitudes from decimal degrees to radians
     lat1 = radians(lat1)
@@ -137,15 +149,13 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
         if array1.shape != array2.shape:
             raise IndexError("When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument.")
 
+    # normalize points
+    array1 = numpy.array([normalize(p[0], p[1]) for p in array1])
+    array2 = numpy.array([normalize(p[0], p[1]) for p in array2])
+
     # unpack latitude/longitude
     lat1, lng1 = array1[:, 0], array1[:, 1]
     lat2, lng2 = array2[:, 0], array2[:, 1]
-
-    # normalize latitude to [-90, 90] and longitude to [-180, 180] ranges
-    lat1 = (lat1 + 90) % 180 - 90
-    lat2 = (lat2 + 90) % 180 - 90
-    lng1 = (lng1 + 180) % 360 - 180
-    lng2 = (lng2 + 180) % 360 - 180
 
     # convert all latitudes/longitudes from decimal degrees to radians
     lat1 = numpy.radians(lat1)
