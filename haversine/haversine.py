@@ -60,7 +60,7 @@ def get_avg_earth_radius(unit):
     return _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
 
 
-def normalize(lat: float, lon: float) -> Tuple[float, float]:
+def _normalize(lat: float, lon: float) -> Tuple[float, float]:
     """
     Normalize point to [-90, 90] latitude and [-180, 180] longitude.
     """
@@ -72,7 +72,17 @@ def normalize(lat: float, lon: float) -> Tuple[float, float]:
     return lat, lon
 
 
-def haversine(point1, point2, unit=Unit.KILOMETERS):
+def _ensure_lat_lon(lat: float, lon: float):
+    """
+    Ensure that the given latitude and longitude have proper values. An exception is raised if they are not.
+    """
+    if lat < -90 or lat > 90:
+        raise ValueError(f"Latitude {lat} is out of range [-90, 90]")
+    if lon < -180 or lon > 180:
+        raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
+
+
+def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
     Takes two 2-tuples, containing the latitude and longitude of each point in decimal degrees,
@@ -83,6 +93,7 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
     :param unit: a member of haversine.Unit, or, equivalently, a string containing the
                  initials of its corresponding unit of measurement (i.e. miles = mi)
                  default 'km' (kilometers).
+    :param normalize: if True, normalize the points to [-90, 90] latitude and [-180, 180] longitude.
 
     Example: ``haversine((45.7597, 4.8422), (48.8567, 2.3508), unit=Unit.METERS)``
 
@@ -100,9 +111,13 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
     lat1, lng1 = point1
     lat2, lng2 = point2
 
-    # normalize points
-    lat1, lng1 = normalize(lat1, lng1)
-    lat2, lng2 = normalize(lat2, lng2)
+    # normalize points or ensure they are proper lat/lon, i.e., in [-90, 90] and [-180, 180]
+    if normalize:
+        lat1, lng1 = _normalize(lat1, lng1)
+        lat2, lng2 = _normalize(lat2, lng2)
+    else:
+        _ensure_lat_lon(lat1, lng1)
+        _ensure_lat_lon(lat2, lng2)
 
     # convert all latitudes/longitudes from decimal degrees to radians
     lat1 = radians(lat1)
@@ -118,7 +133,7 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
     return 2 * get_avg_earth_radius(unit) * asin(sqrt(d))
 
 
-def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
+def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False):
     '''
     The exact same function as "haversine", except that this
     version replaces math functions with numpy functions.
@@ -149,9 +164,13 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
         if array1.shape != array2.shape:
             raise IndexError("When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument.")
 
-    # normalize points
-    array1 = numpy.array([normalize(p[0], p[1]) for p in array1])
-    array2 = numpy.array([normalize(p[0], p[1]) for p in array2])
+    # normalize points or ensure they are proper lat/lon, i.e., in [-90, 90] and [-180, 180]
+    if normalize:
+        array1 = numpy.array([_normalize(p[0], p[1]) for p in array1])
+        array2 = numpy.array([_normalize(p[0], p[1]) for p in array2])
+    else:
+        [_ensure_lat_lon(p[0], p[1]) for p in array1]
+        [_ensure_lat_lon(p[0], p[1]) for p in array2]
 
     # unpack latitude/longitude
     lat1, lng1 = array1[:, 0], array1[:, 1]
