@@ -88,6 +88,10 @@ def haversine(point1, point2, unit=Unit.KILOMETERS):
     lat1, lng1 = point1
     lat2, lng2 = point2
 
+    # normalize latitude to [-90, 90] and longitude to [-180, 180] ranges
+    lat1, lat2 = (lat1 + 90) % 180 - 90, (lat2 + 90) % 180 - 90
+    lng1, lng2 = (lng1 + 180) % 360 - 180, (lng2 + 180) % 360 - 180
+
     # convert all latitudes/longitudes from decimal degrees to radians
     lat1 = radians(lat1)
     lng1 = radians(lng1)
@@ -136,6 +140,12 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False):
     # unpack latitude/longitude
     lat1, lng1 = array1[:, 0], array1[:, 1]
     lat2, lng2 = array2[:, 0], array2[:, 1]
+
+    # normalize latitude to [-90, 90] and longitude to [-180, 180] ranges
+    lat1 = (lat1 + 90) % 180 - 90
+    lat2 = (lat2 + 90) % 180 - 90
+    lng1 = (lng1 + 180) % 360 - 180
+    lng2 = (lng2 + 180) % 360 - 180
 
     # convert all latitudes/longitudes from decimal degrees to radians
     lat1 = numpy.radians(lat1)

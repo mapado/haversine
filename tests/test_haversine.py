@@ -36,6 +36,15 @@ def test_haversine_deg_rad():
     assert haversine(p1, p2, unit=Unit.RADIANS) == pi
     assert round(haversine(p1, p2, unit=Unit.DEGREES), 13) == 180.0
 
+
+def test_normalization():
+    """
+    Test makes sure that latitude values outside of [-90,90] and longitude values outside of [-180,180] are normalized into their ranges.
+    """
+    p1, p2 = (0 - 180, 360 - 45), (0, 45)
+    assert haversine(p1, p2, Unit.DEGREES) == 89.99999999999997
+
+
 def test_haversine_deg_rad_great_circle_distance():
     """
     Test makes sure the haversine functions returns the great circle distance (https://en.wikipedia.org/wiki/Great-circle_distance) between two points on a sphere.
