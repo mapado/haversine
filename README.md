@@ -32,6 +32,8 @@ haversine(lyon, paris, unit=Unit.NAUTICAL_MILES)
 >> 211.78037755311516  # in nautical miles
 ```
 
+The lat/lon values need to be provided in degrees. If values are outside the allowed ranges [-90, 90] or [-180, 180], they will be normalized.
+
 The `haversine.Unit` enum contains all supported units:
 
 ```python
