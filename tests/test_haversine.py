@@ -1,5 +1,6 @@
 from haversine import haversine, Unit
 from math import pi
+import pytest
 
 from tests.geo_ressources import LYON, PARIS, NEW_YORK, LONDON, EXPECTED_LYON_PARIS
 
@@ -43,6 +44,20 @@ def test_normalization():
     """
     p1, p2 = (0 - 180, -45 + 360), (0, 45)  # Use same values as below
     assert haversine(p1, p2, Unit.DEGREES, normalize=True) == 89.99999999999997
+
+
+def test_out_of_bounds():
+    """
+    Test makes sure that a ValueError is raised when latitude or longitude values are out of bounds.
+    """
+    with pytest.raises(ValueError):
+        haversine((-90.0001, 0), (0, 0), Unit.DEGREES, normalize=False)
+    with pytest.raises(ValueError):
+        haversine((0, 0), (90.0001, 0), Unit.DEGREES, normalize=False)
+    with pytest.raises(ValueError):
+        haversine((0, -180.0001), (0, 0), Unit.DEGREES, normalize=False)
+    with pytest.raises(ValueError):
+        haversine((0, 0), (0, 180.0001), Unit.DEGREES, normalize=False)
 
 
 def test_haversine_deg_rad_great_circle_distance():

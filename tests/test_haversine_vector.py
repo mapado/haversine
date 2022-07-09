@@ -26,6 +26,20 @@ def test_normalization():
     assert res == pytest.approx(89.99999999999997, abs=1e-13)
 
 
+def test_out_of_bounds():
+    """
+    Test makes sure that a ValueError is raised when latitude or longitude values are out of bounds.
+    """
+    with pytest.raises(ValueError):
+        haversine_vector([(-90.0001, 0)], [(0, 0)], Unit.DEGREES, normalize=False)
+    with pytest.raises(ValueError):
+        haversine_vector([(0, 0)], [(90.0001, 0)], Unit.DEGREES, normalize=False)
+    with pytest.raises(ValueError):
+        haversine_vector([(0, -180.0001)], [(0, 0)], Unit.DEGREES, normalize=False)
+    with pytest.raises(ValueError):
+        haversine_vector([(0, 0)], [(0, 180.0001)], Unit.DEGREES, normalize=False)
+
+
 def test_haversine_vector_comb():
     unit = Unit.KILOMETERS
     expected = [
