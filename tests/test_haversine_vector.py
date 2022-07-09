@@ -23,7 +23,7 @@ def test_normalization():
     """
     p1, p2 = (0 - 180, -45 + 360), (0, 45)  # Use same values as below
     res = haversine_vector([p1], [p2], Unit.DEGREES, normalize=True)[0]
-    assert res == 89.99999999999997
+    assert res == pytest.approx(89.99999999999997, abs=1e-13)
 
 
 def test_haversine_vector_comb():
