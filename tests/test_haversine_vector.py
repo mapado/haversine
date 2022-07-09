@@ -22,7 +22,8 @@ def test_normalization():
     Test makes sure that latitude values outside of [-90,90] and longitude values outside of [-180,180] are normalized into their ranges.
     """
     p1, p2 = (0 - 180, -45 + 360), (0, 45)  # Use same values as below
-    assert haversine_vector([p1], [p2], Unit.DEGREES, normalize=True) == 89.99999999999997
+    res = haversine_vector([p1], [p2], Unit.DEGREES, normalize=True)[0]
+    assert res == 89.99999999999997
 
 
 def test_haversine_vector_comb():
