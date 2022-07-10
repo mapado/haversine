@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.6.0
+
+- Check or normalize given lat/lon. [#49](https://github.com/mapado/haversine/issues/49) by [@uri-rodberg](https://github.com/uri-rodberg) and [@merschformann](https://github.com/merschformann)
+
 ## 2.5.1
 
 - Reset type hinting for `inverse_haversine`
