@@ -17,6 +17,50 @@ def test_pair(unit):
     return test_lyon_paris(unit)
 
 
+@pytest.mark.parametrize(
+    "oob_from,oob_to,proper_from,proper_to", [
+        ((-90.0001, 0), (0, 0), (-89.9999, 180), (0, 0)),
+        ((-90.0001, 30), (0, 0), (-89.9999, -150), (0, 0)),
+        ((0, 0), (90.0001, 0), (0, 0), (89.9999, -180)),
+        ((0, 0), (90.0001, 30), (0, 0), (89.9999, -150)),
+        ((0, -180.0001), (0, 0), (0, 179.9999), (0, 0)),
+        ((30, -180.0001), (0, 0), (30, 179.9999), (0, 0)),
+        ((0, 0), (0, 180.0001), (0, 0), (0, -179.9999)),
+        ((0, 0), (30, 180.0001), (0, 0), (30, -179.9999)),
+    ]
+)
+def test_normalization(oob_from, oob_to, proper_from, proper_to):
+    """
+    Test makes sure that normalization works as expected by comparing distance of out of
+    bounds points cases to equal cases where all points are within lat/lon ranges. The
+    results are expected to be equal (within some tolerance to account for numerical
+    issues).
+    """
+    normalized_during, normalized_already = (
+        haversine_vector([oob_from], [oob_to], Unit.DEGREES, normalize=True),
+        haversine_vector([proper_from], [proper_to], Unit.DEGREES, normalize=True),
+    )
+    assert normalized_during == pytest.approx(normalized_already, abs=1e-10)
+
+
+@pytest.mark.parametrize(
+    "oob_from,oob_to", [
+        ((-90.0001, 0), (0, 0)),
+        ((0, 0), (90.0001, 0)),
+        ((0, -180.0001), (0, 0)),
+        ((0, 0), (0, 180.0001)),
+    ]
+)
+def test_out_of_bounds(oob_from, oob_to):
+    """
+    Test makes sure that a ValueError is raised when latitude or longitude values are out of bounds.
+    """
+    with pytest.raises(ValueError):
+        haversine_vector([oob_from], [oob_to])
+    with pytest.raises(ValueError):
+        haversine_vector([oob_from], [oob_to], normalize=False)
+
+
 def test_haversine_vector_comb():
     unit = Unit.KILOMETERS
     expected = [
