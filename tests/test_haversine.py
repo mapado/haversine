@@ -62,7 +62,6 @@ def test_normalization():
         haversine((0, 0), (89.9999, -150), Unit.DEGREES, normalize=True),
     )
     assert normalized == straight
-
     normalized, straight = (
         haversine((0, -180.0001), (0, 0), Unit.DEGREES, normalize=True),
         haversine((0, 179.99990000000003), (0, 0), Unit.DEGREES, normalize=True),
