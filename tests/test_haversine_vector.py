@@ -21,9 +21,46 @@ def test_normalization():
     """
     Test makes sure that latitude values outside of [-90,90] and longitude values outside of [-180,180] are normalized into their ranges.
     """
-    p1, p2 = (0 - 180, -45 + 360), (0, 45)  # Use same values as below
-    res = haversine_vector([p1], [p2], Unit.DEGREES, normalize=True)[0]
-    assert res == pytest.approx(89.99999999999997, abs=1e-13)
+    normalized, straight = (
+        haversine_vector([(-90.0001, 0)], [(0, 0)], Unit.DEGREES, normalize=True),
+        haversine_vector([(-89.9999, 180)], [(0, 0)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(-90.0001, 30)], [(0, 0)], Unit.DEGREES, normalize=True),
+        haversine_vector([(-89.9999, -150)], [(0, 0)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(0, 0)], [(90.0001, 0)], Unit.DEGREES, normalize=True),
+        haversine_vector([(0, 0)], [(89.9999, -180)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(0, 0)], [(90.0001, 30)], Unit.DEGREES, normalize=True),
+        haversine_vector([(0, 0)], [(89.9999, -150)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(0, -180.0001)], [(0, 0)], Unit.DEGREES, normalize=True),
+        haversine_vector([(0, 179.9999)], [(0, 0)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(30, -180.0001)], [(0, 0)], Unit.DEGREES, normalize=True),
+        haversine_vector([(30, 179.9999)], [(0, 0)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(0, 0)], [(0, 180.0001)], Unit.DEGREES, normalize=True),
+        haversine_vector([(0, 0)], [(0, -179.9999)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine_vector([(0, 0)], [(30, 180.0001)], Unit.DEGREES, normalize=True),
+        haversine_vector([(0, 0)], [(30, -179.9999)], Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
 
 
 def test_out_of_bounds():
