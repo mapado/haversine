@@ -42,8 +42,47 @@ def test_normalization():
     """
     Test makes sure that latitude values outside of [-90,90] and longitude values outside of [-180,180] are normalized into their ranges.
     """
-    p1, p2 = (0 - 180, -45 + 360), (0, 45)  # Use same values as below
-    assert haversine(p1, p2, Unit.DEGREES, normalize=True) == 89.99999999999997
+    normalized, straight = (
+        haversine((-90.0001, 0), (0, 0), Unit.DEGREES, normalize=True),
+        haversine((-89.9999, 180), (0, 0), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine((-90.0001, 30), (0, 0), Unit.DEGREES, normalize=True),
+        haversine((-89.9999, -150), (0, 0), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine((0, 0), (90.0001, 0), Unit.DEGREES, normalize=True),
+        haversine((0, 0), (89.9999, -180), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine((0, 0), (90.0001, 30), Unit.DEGREES, normalize=True),
+        haversine((0, 0), (89.9999, -150), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+
+    normalized, straight = (
+        haversine((0, -180.0001), (0, 0), Unit.DEGREES, normalize=True),
+        haversine((0, 179.99990000000003), (0, 0), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine((30, -180.0001), (0, 0), Unit.DEGREES, normalize=True),
+        haversine((30, 179.99990000000003), (0, 0), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine((0, 0), (0, 180.0001), Unit.DEGREES, normalize=True),
+        haversine((0, 0), (0, -179.99990000000003), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
+    normalized, straight = (
+        haversine((0, 0), (30, 180.0001), Unit.DEGREES, normalize=True),
+        haversine((0, 0), (30, -179.99990000000003), Unit.DEGREES, normalize=True),
+    )
+    assert normalized == straight
 
 
 def test_out_of_bounds():
@@ -51,13 +90,21 @@ def test_out_of_bounds():
     Test makes sure that a ValueError is raised when latitude or longitude values are out of bounds.
     """
     with pytest.raises(ValueError):
-        haversine((-90.0001, 0), (0, 0), Unit.DEGREES, normalize=False)
+        haversine((-90.0001, 0), (0, 0))
     with pytest.raises(ValueError):
-        haversine((0, 0), (90.0001, 0), Unit.DEGREES, normalize=False)
+        haversine((0, 0), (90.0001, 0))
     with pytest.raises(ValueError):
-        haversine((0, -180.0001), (0, 0), Unit.DEGREES, normalize=False)
+        haversine((0, -180.0001), (0, 0))
     with pytest.raises(ValueError):
-        haversine((0, 0), (0, 180.0001), Unit.DEGREES, normalize=False)
+        haversine((0, 0), (0, 180.0001))
+    with pytest.raises(ValueError):
+        haversine((-90.0001, 0), (0, 0), normalize=False)
+    with pytest.raises(ValueError):
+        haversine((0, 0), (90.0001, 0), normalize=False)
+    with pytest.raises(ValueError):
+        haversine((0, -180.0001), (0, 0), normalize=False)
+    with pytest.raises(ValueError):
+        haversine((0, 0), (0, 180.0001), normalize=False)
 
 
 def test_haversine_deg_rad_great_circle_distance():
