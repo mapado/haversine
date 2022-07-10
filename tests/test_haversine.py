@@ -64,22 +64,22 @@ def test_normalization():
     assert normalized == straight
     normalized, straight = (
         haversine((0, -180.0001), (0, 0), Unit.DEGREES, normalize=True),
-        haversine((0, 179.99990000000003), (0, 0), Unit.DEGREES, normalize=True),
+        haversine((0, 179.9999), (0, 0), Unit.DEGREES, normalize=True),
     )
     assert normalized == straight
     normalized, straight = (
         haversine((30, -180.0001), (0, 0), Unit.DEGREES, normalize=True),
-        haversine((30, 179.99990000000003), (0, 0), Unit.DEGREES, normalize=True),
+        haversine((30, 179.9999), (0, 0), Unit.DEGREES, normalize=True),
     )
     assert normalized == straight
     normalized, straight = (
         haversine((0, 0), (0, 180.0001), Unit.DEGREES, normalize=True),
-        haversine((0, 0), (0, -179.99990000000003), Unit.DEGREES, normalize=True),
+        haversine((0, 0), (0, -179.9999), Unit.DEGREES, normalize=True),
     )
     assert normalized == straight
     normalized, straight = (
         haversine((0, 0), (30, 180.0001), Unit.DEGREES, normalize=True),
-        haversine((0, 0), (30, -179.99990000000003), Unit.DEGREES, normalize=True),
+        haversine((0, 0), (30, -179.9999), Unit.DEGREES, normalize=True),
     )
     assert normalized == straight
 
