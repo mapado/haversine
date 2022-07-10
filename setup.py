@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='haversine',
-    version='2.5.1',
+    version='2.6.0',
     description='Calculate the distance between 2 points on Earth.',
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
