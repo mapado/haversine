@@ -25,8 +25,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
+        cache: 'pipenv'
+    - name: Install pipenv
+      run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
     - name: Publish package
       run: TWINE_USERNAME=__token__ TWINE_PASSWORD=${{ secrets.TESTPIPY_HAVERSINE_TOKEN }} make deploy
