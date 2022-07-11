@@ -14,6 +14,7 @@ deploy: clean build
 	pipenv install twine
 	pipenv run twine upload dist/*
 	pipenv uninstall twine
+	git checkout -- Pipfile.lock
 
 
 .PHONY: help
