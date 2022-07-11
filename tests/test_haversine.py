@@ -81,6 +81,20 @@ def test_out_of_bounds(oob_from, oob_to):
     with pytest.raises(ValueError):
         haversine(oob_from, oob_to, normalize=False)
 
+@pytest.mark.parametrize(
+    "in_bounds_from,in_bounds_to", [
+        ((-90, 0), (0, 0)),
+        ((0, 0), (90, 0)),
+        ((0, -180), (0, 0)),
+        ((0, 0), (0, 180)),
+    ]
+)
+def test_in_bounds(in_bounds_from, in_bounds_to):
+    """
+    Test makes sure that a ValueError is NOT raised when latitude or longitude values are in bounds.
+    """
+    assert haversine(in_bounds_from, in_bounds_to) > 0
+
 
 def test_haversine_deg_rad_great_circle_distance():
     """
