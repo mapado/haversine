@@ -199,18 +199,61 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     return 2 * get_avg_earth_radius(unit) * numpy.arcsin(numpy.sqrt(d))
 
 
-def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
-
-    lat, lng = point
-    lat, lng = map(radians, (lat, lng))
-    d = distance
-    r = get_avg_earth_radius(unit)
+def _get_cos_direction(direction: Union[Direction, float]) -> float:
+    """
+    Returns the cosine of the direction. Transform special case to avoid mathematical imprecision of computers
+    """
     brng = direction.value if isinstance(direction, Direction) else direction
 
-    return_lat = asin(sin(lat) * cos(d / r) + cos(lat)
-                      * sin(d / r) * cos(brng))
-    return_lng = lng + atan2(sin(brng) * sin(d / r) *
-                             cos(lat), cos(d / r) - sin(lat) * sin(return_lat))
+    if brng == 0:  # North
+        return 1
+    elif brng == 0.5 * pi:  # East
+        return 0
+    elif brng == pi:  # South
+        return -1
+    elif brng == 1.5 * pi:  # West
+        return 0
+    else:
+        return cos(brng)
+
+
+def _get_sin_direction(direction: Union[Direction, float]) -> float:
+    """
+    Returns the sine of the direction. Transform special case to avoid mathematical imprecision of computers
+    """
+    brng = direction.value if isinstance(direction, Direction) else direction
+
+    if brng == 0:  # North
+        return 0
+    elif brng == 0.5 * pi:  # East
+        return 1
+    elif brng == pi:  # South
+        return 0
+    elif brng == 1.5 * pi:  # West
+        return -1
+    else:
+        return sin(brng)
+
+
+def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
+    lat, lng = point
+    lat, lng = map(radians, (lat, lng))
+    r = get_avg_earth_radius(unit)
+
+    cos_brng = _get_cos_direction(direction)
+    sin_brng = _get_sin_direction(direction)
+    # print(point, distance, r)
+
+    cos_d_r = cos(distance / r)
+    sin_d_r = sin(distance / r)
+    cos_lat = cos(lat)
+    sin_lat = sin(lat)
+
+    # print(sin_lat, cos_d_r, sin_lat * cos_d_r, cos_lat * sin_d_r * cos_brng)
+    return_lat = asin(sin_lat * cos_d_r + cos_lat * sin_d_r * cos_brng)
+    return_lng = lng + atan2(sin_brng * sin_d_r * cos_lat,
+                             cos_d_r - sin_lat * sin(return_lat))
+    # print(degrees(return_lat))
 
     return_lat, return_lng = map(degrees, (return_lat, return_lng))
     return return_lat, return_lng
