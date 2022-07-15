@@ -4,6 +4,7 @@ import pytest
 
 from tests.geo_ressources import LYON, PARIS, NEW_YORK, LONDON, EXPECTED_LYON_PARIS
 
+
 def haversine_test_factory(unit):
     def test():
         expected = EXPECTED_LYON_PARIS[unit]
@@ -80,6 +81,7 @@ def test_out_of_bounds(oob_from, oob_to):
         haversine(oob_from, oob_to)
     with pytest.raises(ValueError):
         haversine(oob_from, oob_to, normalize=False)
+
 
 @pytest.mark.parametrize(
     "in_bounds_from,in_bounds_to", [

@@ -4,6 +4,7 @@ import pytest
 
 from tests.geo_ressources import EXPECTED_LONDON_PARIS, EXPECTED_LYON_NEW_YORK, EXPECTED_LYON_PARIS, EXPECTED_LONDON_NEW_YORK, LYON, PARIS, NEW_YORK, LONDON
 
+
 @pytest.mark.parametrize(
     'unit', [Unit.KILOMETERS, Unit.METERS, Unit.INCHES]
 )
@@ -12,7 +13,8 @@ def test_pair(unit):
         expected_lyon_paris = EXPECTED_LYON_PARIS[unit]
         assert haversine_vector(LYON, PARIS, unit=unit) == expected_lyon_paris
         assert isinstance(unit.value, str)
-        assert haversine_vector(LYON, PARIS, unit=unit.value) == expected_lyon_paris
+        assert haversine_vector(
+            LYON, PARIS, unit=unit.value) == expected_lyon_paris
 
     return test_lyon_paris(unit)
 
@@ -38,7 +40,8 @@ def test_normalization(oob_from, oob_to, proper_from, proper_to):
     """
     normalized_during, normalized_already = (
         haversine_vector([oob_from], [oob_to], Unit.DEGREES, normalize=True),
-        haversine_vector([proper_from], [proper_to], Unit.DEGREES, normalize=True),
+        haversine_vector([proper_from], [proper_to],
+                         Unit.DEGREES, normalize=True),
     )
     assert normalized_during == pytest.approx(normalized_already, abs=1e-10)
 
@@ -68,10 +71,11 @@ def test_haversine_vector_comb():
         [EXPECTED_LYON_NEW_YORK[unit], EXPECTED_LONDON_NEW_YORK[unit]]
     ]
 
-    assert_allclose( # See https://numpy.org/doc/stable/reference/generated/numpy.testing.assert_allclose.html#numpy.testing.assert_allclose
+    assert_allclose(  # See https://numpy.org/doc/stable/reference/generated/numpy.testing.assert_allclose.html#numpy.testing.assert_allclose
         haversine_vector([LYON, LONDON], [PARIS, NEW_YORK], unit, comb=True),
         expected
     )
+
 
 def test_units_enum():
     from haversine.haversine import _CONVERSIONS

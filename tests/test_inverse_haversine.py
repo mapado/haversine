@@ -5,6 +5,7 @@ import pytest
 
 from tests.geo_ressources import LYON, PARIS, NEW_YORK, LONDON
 
+
 @pytest.mark.parametrize(
     "point, dir, dist, result",
     [
@@ -18,7 +19,8 @@ from tests.geo_ressources import LYON, PARIS, NEW_YORK, LONDON
     ],
 )
 def test_inverse_kilometers(point, dir, dist, result):
-    assert isclose(inverse_haversine(point, dist, dir), result, rtol=1e-5).all()
+    assert isclose(inverse_haversine(point, dist, dir),
+                   result, rtol=1e-5).all()
 
 
 @pytest.mark.parametrize(
@@ -36,8 +38,10 @@ def test_back_and_forth(point, direction, distance, unit):
 
 
 def test_inverse_miles():
-    assert isclose(inverse_haversine(PARIS, 50, Direction.NORTH, unit=Unit.MILES), (49.5803579218996, 2.3508), rtol=1e-5).all()
+    assert isclose(inverse_haversine(PARIS, 50, Direction.NORTH,
+                   unit=Unit.MILES), (49.5803579218996, 2.3508), rtol=1e-5).all()
 
 
 def test_nautical_inverse_miles():
-    assert isclose(inverse_haversine(PARIS, 10, Direction.SOUTH, unit=Unit.NAUTICAL_MILES), (48.69014586638915, 2.3508), rtol=1e-5).all()
+    assert isclose(inverse_haversine(PARIS, 10, Direction.SOUTH,
+                   unit=Unit.NAUTICAL_MILES), (48.69014586638915, 2.3508), rtol=1e-5).all()
