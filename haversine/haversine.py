@@ -162,7 +162,8 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     # Asserts that both arrays have same dimensions if not in combination mode
     if not comb:
         if array1.shape != array2.shape:
-            raise IndexError("When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument.")
+            raise IndexError(
+                "When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument.")
 
     # normalize points or ensure they are proper lat/lon, i.e., in [-90, 90] and [-180, 180]
     if normalize:
@@ -206,8 +207,10 @@ def inverse_haversine(point, distance, direction: Union[Direction, float], unit=
     r = get_avg_earth_radius(unit)
     brng = direction.value if isinstance(direction, Direction) else direction
 
-    return_lat = asin(sin(lat) * cos(d / r) + cos(lat) * sin(d / r) * cos(brng))
-    return_lng = lng + atan2(sin(brng) * sin(d / r) * cos(lat), cos(d / r) - sin(lat) * sin(return_lat))
+    return_lat = asin(sin(lat) * cos(d / r) + cos(lat)
+                      * sin(d / r) * cos(brng))
+    return_lng = lng + atan2(sin(brng) * sin(d / r) *
+                             cos(lat), cos(d / r) - sin(lat) * sin(return_lat))
 
     return_lat, return_lng = map(degrees, (return_lat, return_lng))
     return return_lat, return_lng
