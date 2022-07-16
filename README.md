@@ -22,11 +22,11 @@ haversine(lyon, paris)
 >> 392.2172595594006  # in kilometers
 
 haversine(lyon, paris, unit=Unit.MILES)
->> 243.71201856934454  # in miles
+>> 243.71250609539814  # in miles
 
 # you can also use the string abbreviation for units:
 haversine(lyon, paris, unit='mi')
->> 243.71201856934454  # in miles
+>> 243.71250609539814  # in miles
 
 haversine(lyon, paris, unit=Unit.NAUTICAL_MILES)
 >> 211.78037755311516  # in nautical miles
@@ -51,38 +51,39 @@ outputs
  <Unit.RADIANS: 'rad'>, <Unit.DEGREES: 'deg'>)
 ```
 
-
 #### Note for radians and degrees
 
 The radian and degrees returns the [great circle distance](https://en.wikipedia.org/wiki/Great-circle_distance) between two points on a sphere.
 
 Notes:
 
-  - on a unit-sphere the angular distance in radians equals the distance between the two points on the sphere (definition of radians)
-  - When using "degree", this angle is just converted from radians to degrees
+- on a unit-sphere the angular distance in radians equals the distance between the two points on the sphere (definition of radians)
+- When using "degree", this angle is just converted from radians to degrees
 
 ### Inverse Haversine Formula
+
 Calculates a point from a given vector (distance and direction) and start point.
 Currently explicitly supports both cardinal (north, east, south, west) and intercardinal (northeast, southeast, southwest, northwest) directions.
 But also allows for explicit angles expressed in Radians.
 
 ## Example: Finding arbitary point from Paris
+
 ```python
 from haversine import inverse_haversine, Direction
 from math import pi
 paris = (48.8567, 2.3508) # (lat, lon)
 # Finding 32 km west of Paris
 inverse_haversine(paris, 32, Direction.WEST)
-# returns tuple (49.1444, 2.3508)
+# returns tuple (48.85587279023947, 1.9134085092836945)
 # Finding 32 km southwest of Paris
 inverse_haversine(paris, 32, pi * 1.25)
-# returns tuple (48.5377, 1.8705)
+# returns tuple (48.65279552300661, 2.0427666779658806)
 # Finding 50 miles north of Paris
 inverse_haversine(paris, 50, Direction.NORTH, unit=Unit.MILES)
-# returns tuple (49.5803, 2.3508)
+# returns tuple (49.58035791599536, 2.3508)
 # Finding 10 nautical miles south of Paris
 inverse_haversine(paris, 10, Direction.SOUTH, unit=Unit.NAUTICAL_MILES)
-# returns tuple (48.6901, 2.3508)
+# returns tuple (48.690145868497645, 2.3508)
 ```
 
 ### Performance optimisation for distances between all points in two vectors
