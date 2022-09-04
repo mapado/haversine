@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.7.0
+
+Official support of python 3.10, 3.11 and 3.12
+
 ## 2.6.0
 
 - Check or normalize given lat/lon. [#49](https://github.com/mapado/haversine/issues/49) by [@uri-rodberg](https://github.com/uri-rodberg) and [@merschformann](https://github.com/merschformann)
