@@ -1,6 +1,6 @@
 from math import radians, cos, sin, asin, sqrt, degrees, pi, atan2
 from enum import Enum
-from typing import Union, Tuple
+from typing import Union, Tuple, Iterable
 
 
 # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
@@ -80,6 +80,16 @@ def _ensure_lat_lon(lat: float, lon: float):
         raise ValueError(f"Latitude {lat} is out of range [-90, 90]")
     if lon < -180 or lon > 180:
         raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
+
+
+def _ensure_lat_lon_vector(lat: Iterable, lon: Iterable):
+        """
+        Ensure that the given latitude and longitude iterables have proper values. An exception is raised if they are not.
+        """
+        if any(lat < -90) or any(lat > 90):
+            raise ValueError(f"One of the values in latitude {lat} is out of range [-90, 90]")
+        if any(lon < -180) or any(lon > 180):
+            raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
 
 
 def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False):
@@ -170,8 +180,8 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
         array1 = numpy.array([_normalize(p[0], p[1]) for p in array1])
         array2 = numpy.array([_normalize(p[0], p[1]) for p in array2])
     else:
-        [_ensure_lat_lon(p[0], p[1]) for p in array1]
-        [_ensure_lat_lon(p[0], p[1]) for p in array2]
+        _ensure_lat_lon_vector(array1[:, 0], array1[:, 1])
+        _ensure_lat_lon_vector(array2[:, 0], array2[:, 1])
 
     # unpack latitude/longitude
     lat1, lng1 = array1[:, 0], array1[:, 1]
