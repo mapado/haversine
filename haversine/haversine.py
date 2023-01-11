@@ -82,7 +82,7 @@ def _ensure_lat_lon(lat: float, lon: float):
         raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
 
 
-def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False):
+def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
     Takes two 2-tuples, containing the latitude and longitude of each point in decimal degrees,
@@ -94,6 +94,7 @@ def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False):
                  initials of its corresponding unit of measurement (i.e. miles = mi)
                  default 'km' (kilometers).
     :param normalize: if True, normalize the points to [-90, 90] latitude and [-180, 180] longitude.
+    :param check: if True, check that points are normalized.
 
     Example: ``haversine((45.7597, 4.8422), (48.8567, 2.3508), unit=Unit.METERS)``
 
@@ -115,7 +116,7 @@ def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False):
     if normalize:
         lat1, lng1 = _normalize(lat1, lng1)
         lat2, lng2 = _normalize(lat2, lng2)
-    else:
+    elif check:
         _ensure_lat_lon(lat1, lng1)
         _ensure_lat_lon(lat2, lng2)
 
@@ -133,7 +134,7 @@ def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False):
     return 2 * get_avg_earth_radius(unit) * asin(sqrt(d))
 
 
-def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False):
+def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False, check=True):
     '''
     The exact same function as "haversine", except that this
     version replaces math functions with numpy functions.
@@ -169,7 +170,7 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     if normalize:
         array1 = numpy.array([_normalize(p[0], p[1]) for p in array1])
         array2 = numpy.array([_normalize(p[0], p[1]) for p in array2])
-    else:
+    elif check:
         [_ensure_lat_lon(p[0], p[1]) for p in array1]
         [_ensure_lat_lon(p[0], p[1]) for p in array2]
 
