@@ -132,16 +132,19 @@ _inverse_haversine_kernel = _create_inverse_haversine_kernel(math)
 
 try:
     import numpy
+    has_numpy = True
     _haversine_kernel_vector = _create_haversine_kernel(numpy)
     _inverse_haversine_kernel_vector = _create_inverse_haversine_kernel(numpy)
 except ModuleNotFoundError:
     # Import error will be reported in haversine_vector() / inverse_haversine_vector()
-    pass
+    has_numpy = False
 
 try:
     import numba # type: ignore
-    _haversine_kernel_vector = numba.vectorize(_haversine_kernel)
-    #_inverse_haversine_kernel_vector = numba.vectorize(_inverse_haversine_kernel) # Tuple output not supported
+    if has_numpy:
+        _haversine_kernel_vector = numba.vectorize(_haversine_kernel)
+        # Tuple output is not supported for numba.vectorize. Just jit the numpy version.
+        _inverse_haversine_kernel_vector = numba.njit(_inverse_haversine_kernel_vector)
     _haversine_kernel = numba.njit(_haversine_kernel)
     _inverse_haversine_kernel = numba.njit(_inverse_haversine_kernel)
 except ModuleNotFoundError:
@@ -197,9 +200,7 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     distance between two points, but is much faster for computing
     the distance between two vectors of points due to vectorization.
     '''
-    try:
-        import numpy
-    except ModuleNotFoundError:
+    if not has_numpy:
         raise RuntimeError('Error, unable to import Numpy, '
                            'consider using haversine instead of haversine_vector.')
 
@@ -250,9 +251,7 @@ def inverse_haversine(point, distance, direction: Union[Direction, float], unit=
 
 
 def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS):
-    try:
-        import numpy
-    except ModuleNotFoundError:
+    if not has_numpy:
         raise RuntimeError('Error, unable to import Numpy, '
                            'consider using inverse_haversine instead of inverse_haversine_vector.')
 
