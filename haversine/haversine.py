@@ -7,7 +7,7 @@ from typing import Union, Tuple
 _AVG_EARTH_RADIUS_KM = 6371.0088
 
 
-class Unit(Enum):
+class Unit(str, Enum):
     """
     Enumeration of supported units.
     The full list can be checked by iterating over the class; e.g.
@@ -24,7 +24,7 @@ class Unit(Enum):
     DEGREES = 'deg'
 
 
-class Direction(Enum):
+class Direction(float, Enum):
     """
     Enumeration of supported directions.
     The full list can be checked by iterating over the class; e.g.
@@ -32,7 +32,7 @@ class Direction(Enum):
     Angles expressed in radians.
     """
 
-    NORTH = 0
+    NORTH = 0.0
     NORTHEAST = pi * 0.25
     EAST = pi * 0.5
     SOUTHEAST = pi * 0.75
@@ -56,7 +56,6 @@ _CONVERSIONS = {
 
 
 def get_avg_earth_radius(unit):
-    unit = Unit(unit)
     return _AVG_EARTH_RADIUS_KM * _CONVERSIONS[unit]
 
 
@@ -206,11 +205,10 @@ def inverse_haversine(point, distance, direction: Union[Direction, float], unit=
     lat, lng = map(radians, (lat, lng))
     d = distance
     r = get_avg_earth_radius(unit)
-    brng = direction.value if isinstance(direction, Direction) else direction
 
     return_lat = asin(sin(lat) * cos(d / r) + cos(lat)
-                      * sin(d / r) * cos(brng))
-    return_lng = lng + atan2(sin(brng) * sin(d / r) *
+                      * sin(d / r) * cos(direction))
+    return_lng = lng + atan2(sin(direction) * sin(d / r) *
                              cos(lat), cos(d / r) - sin(lat) * sin(return_lat))
 
     return_lat, return_lng = map(degrees, (return_lat, return_lng))
