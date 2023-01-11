@@ -82,32 +82,38 @@ def _ensure_lat_lon(lat: float, lon: float):
         raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
 
 
-def _create_haversine_kernel(ops):
-    asin = ops.asin if hasattr(ops, 'asin') else ops.arcsin
+def _explode_args(f):
+    return lambda ops: f(**ops.__dict__)
+
+
+@_explode_args
+def _create_haversine_kernel(*, asin=None, arcsin=None, cos, radians, sin, sqrt, **_):
+    asin = asin or arcsin
 
     def _haversine_kernel(lat1, lng1, lat2, lng2):
         """
         Compute the haversine distance on unit sphere.  Inputs are in degrees,
         either scalars (with ops==math) or arrays (with ops==numpy).
         """
-        lat1 = ops.radians(lat1)
-        lng1 = ops.radians(lng1)
-        lat2 = ops.radians(lat2)
-        lng2 = ops.radians(lng2)
+        lat1 = radians(lat1)
+        lng1 = radians(lng1)
+        lat2 = radians(lat2)
+        lng2 = radians(lng2)
         lat = lat2 - lat1
         lng = lng2 - lng1
-        d = (ops.sin(lat * 0.5) ** 2
-             + ops.cos(lat1) * ops.cos(lat2) * ops.sin(lng * 0.5) ** 2)
-        # Note: 2 * atan2(ops.sqrt(d), ops.sqrt(1-d)) is more accurate at
+        d = (sin(lat * 0.5) ** 2
+             + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2)
+        # Note: 2 * atan2(sqrt(d), sqrt(1-d)) is more accurate at
         # large distance (d is close to 1), but also slower.
-        return 2 * asin(ops.sqrt(d))
+        return 2 * asin(sqrt(d))
     return _haversine_kernel
 
 
 
-def _create_inverse_haversine_kernel(ops):
-    asin = ops.asin if hasattr(ops, 'asin') else ops.arcsin
-    atan2 = ops.atan2 if hasattr(ops, 'atan2') else ops.arctan2
+@_explode_args
+def _create_inverse_haversine_kernel(*, asin=None, arcsin=None, atan2=None, arctan2=None, cos, degrees, radians, sin, sqrt, **_):
+    asin = asin or arcsin
+    atan2 = atan2 or arctan2
 
     def _inverse_haversine_kernel(lat, lng, direction, d):
         """
@@ -115,15 +121,15 @@ def _create_inverse_haversine_kernel(ops):
         direction in radians; all inputs are either scalars (with ops==math) or
         arrays (with ops==numpy).
         """
-        lat = ops.radians(lat)
-        lng = ops.radians(lng)
-        cos_d, sin_d = ops.cos(d), ops.sin(d)
-        cos_lat, sin_lat = ops.cos(lat), ops.sin(lat)
+        lat = radians(lat)
+        lng = radians(lng)
+        cos_d, sin_d = cos(d), sin(d)
+        cos_lat, sin_lat = cos(lat), sin(lat)
         sin_d_cos_lat = sin_d * cos_lat
-        return_lat = asin(cos_d * sin_lat + sin_d_cos_lat * ops.cos(direction))
-        return_lng = lng + atan2(ops.sin(direction) * sin_d_cos_lat,
-                                 cos_d - sin_lat * ops.sin(return_lat))
-        return ops.degrees(return_lat), ops.degrees(return_lng)
+        return_lat = asin(cos_d * sin_lat + sin_d_cos_lat * cos(direction))
+        return_lng = lng + atan2(sin(direction) * sin_d_cos_lat,
+                                 cos_d - sin_lat * sin(return_lat))
+        return degrees(return_lat), degrees(return_lng)
     return _inverse_haversine_kernel
 
 
