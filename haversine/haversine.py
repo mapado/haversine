@@ -1,6 +1,7 @@
-from math import radians, cos, sin, asin, sqrt, degrees, pi, atan2
 from enum import Enum
+from math import pi
 from typing import Union, Tuple
+import math
 
 
 # mean earth radius - https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
@@ -81,6 +82,49 @@ def _ensure_lat_lon(lat: float, lon: float):
         raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
 
 
+def _create_haversine_kernel(ops):
+    arcsin = ops.asin if hasattr(ops, 'asin') else ops.arcsin
+    def _haversine_kernel(lat1, lng1, lat2, lng2):
+        """
+        Compute the haversine distance on unit sphere.  Inputs are in degrees,
+        either scalars (with ops==math) or arrays (with ops==numpy).
+        """
+        lat1 = ops.radians(lat1)
+        lng1 = ops.radians(lng1)
+        lat2 = ops.radians(lat2)
+        lng2 = ops.radians(lng2)
+        lat = lat2 - lat1
+        lng = lng2 - lng1
+        d = (ops.sin(lat * 0.5) ** 2
+             + ops.cos(lat1) * ops.cos(lat2) * ops.sin(lng * 0.5) ** 2)
+        # Note: 2 * arctan2(ops.sqrt(d), ops.sqrt(1-d)) is more accurate at
+        # large distance (d is close to 1), but also slower.
+        return 2 * arcsin(ops.sqrt(d))
+    return _haversine_kernel
+
+
+_haversine_kernel = _create_haversine_kernel(math)
+
+
+try:
+    import numba # type: ignore
+    _haversine_kernel_vector = numba.vectorize(_haversine_kernel)
+    _haversine_kernel = numba.njit(_haversine_kernel)
+    # Provoke an early Exception if numba compilation fails
+    _haversine_kernel(0.0, 0.0, 0.0, 0.0)
+except Exception as e:
+    if not isinstance(e, ModuleNotFoundError):
+        import warnings
+        warnings.warn(f'numba compilation failed: {e}')
+        _haversine_kernel = _create_haversine_kernel(math)
+    try:
+        import numpy
+        _haversine_kernel_vector = _create_haversine_kernel(numpy)
+    except ModuleNotFoundError:
+        # Import error will be reported in haversine_vector()
+        pass
+
+
 def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True):
     """ Calculate the great-circle distance between two points on the Earth surface.
 
@@ -119,18 +163,7 @@ def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True)
         _ensure_lat_lon(lat1, lng1)
         _ensure_lat_lon(lat2, lng2)
 
-    # convert all latitudes/longitudes from decimal degrees to radians
-    lat1 = radians(lat1)
-    lng1 = radians(lng1)
-    lat2 = radians(lat2)
-    lng2 = radians(lng2)
-
-    # calculate haversine
-    lat = lat2 - lat1
-    lng = lng2 - lng1
-    d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
-
-    return 2 * get_avg_earth_radius(unit) * asin(sqrt(d))
+    return get_avg_earth_radius(unit) * _haversine_kernel(lat1, lng1, lat2, lng2)
 
 
 def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False, check=True):
@@ -144,8 +177,8 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     try:
         import numpy
     except ModuleNotFoundError:
-        return 'Error, unable to import Numpy,\
-        consider using haversine instead of haversine_vector.'
+        raise RuntimeError('Error, unable to import Numpy, '
+                           'consider using haversine instead of haversine_vector.')
 
     # ensure arrays are numpy ndarrays
     if not isinstance(array1, numpy.ndarray):
@@ -177,12 +210,6 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     lat1, lng1 = array1[:, 0], array1[:, 1]
     lat2, lng2 = array2[:, 0], array2[:, 1]
 
-    # convert all latitudes/longitudes from decimal degrees to radians
-    lat1 = numpy.radians(lat1)
-    lng1 = numpy.radians(lng1)
-    lat2 = numpy.radians(lat2)
-    lng2 = numpy.radians(lng2)
-
     # If in combination mode, turn coordinates of array1 into column vectors for broadcasting
     if comb:
         lat1 = numpy.expand_dims(lat1, axis=0)
@@ -190,16 +217,11 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
         lat2 = numpy.expand_dims(lat2, axis=1)
         lng2 = numpy.expand_dims(lng2, axis=1)
 
-    # calculate haversine
-    lat = lat2 - lat1
-    lng = lng2 - lng1
-    d = (numpy.sin(lat * 0.5) ** 2
-         + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin(lng * 0.5) ** 2)
-
-    return 2 * get_avg_earth_radius(unit) * numpy.arcsin(numpy.sqrt(d))
+    return get_avg_earth_radius(unit) * _haversine_kernel_vector(lat1, lng1, lat2, lng2)
 
 
 def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
+    from math import asin, atan2, cos, degrees, radians, sin
 
     lat, lng = point
     lat, lng = map(radians, (lat, lng))
