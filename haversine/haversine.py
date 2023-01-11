@@ -117,11 +117,12 @@ def _create_inverse_haversine_kernel(ops):
         """
         lat = ops.radians(lat)
         lng = ops.radians(lng)
-        direction = direction
-        return_lat = asin(ops.sin(lat) * ops.cos(d) + ops.cos(lat)
-                          * ops.sin(d) * ops.cos(direction))
-        return_lng = lng + atan2(ops.sin(direction) * ops.sin(d) *
-                                 ops.cos(lat), ops.cos(d) - ops.sin(lat) * ops.sin(return_lat))
+        cos_d, sin_d = ops.cos(d), ops.sin(d)
+        cos_lat, sin_lat = ops.cos(lat), ops.sin(lat)
+        sin_d_cos_lat = sin_d * cos_lat
+        return_lat = asin(cos_d * sin_lat + sin_d_cos_lat * ops.cos(direction))
+        return_lng = lng + atan2(ops.sin(direction) * sin_d_cos_lat,
+                                 cos_d - sin_lat * ops.sin(return_lat))
         return ops.degrees(return_lat), ops.degrees(return_lng)
     return _inverse_haversine_kernel
 
