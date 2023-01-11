@@ -83,7 +83,8 @@ def _ensure_lat_lon(lat: float, lon: float):
 
 
 def _create_haversine_kernel(ops):
-    arcsin = ops.asin if hasattr(ops, 'asin') else ops.arcsin
+    asin = ops.asin if hasattr(ops, 'asin') else ops.arcsin
+
     def _haversine_kernel(lat1, lng1, lat2, lng2):
         """
         Compute the haversine distance on unit sphere.  Inputs are in degrees,
@@ -97,32 +98,53 @@ def _create_haversine_kernel(ops):
         lng = lng2 - lng1
         d = (ops.sin(lat * 0.5) ** 2
              + ops.cos(lat1) * ops.cos(lat2) * ops.sin(lng * 0.5) ** 2)
-        # Note: 2 * arctan2(ops.sqrt(d), ops.sqrt(1-d)) is more accurate at
+        # Note: 2 * atan2(ops.sqrt(d), ops.sqrt(1-d)) is more accurate at
         # large distance (d is close to 1), but also slower.
-        return 2 * arcsin(ops.sqrt(d))
+        return 2 * asin(ops.sqrt(d))
     return _haversine_kernel
 
 
-_haversine_kernel = _create_haversine_kernel(math)
 
+def _create_inverse_haversine_kernel(ops):
+    asin = ops.asin if hasattr(ops, 'asin') else ops.arcsin
+    atan2 = ops.atan2 if hasattr(ops, 'atan2') else ops.arctan2
+
+    def _inverse_haversine_kernel(lat, lng, direction, d):
+        """
+        Compute the inverse haversine on unit sphere.  lat/lng are in degrees,
+        direction in radians; all inputs are either scalars (with ops==math) or
+        arrays (with ops==numpy).
+        """
+        lat = ops.radians(lat)
+        lng = ops.radians(lng)
+        direction = direction
+        return_lat = asin(ops.sin(lat) * ops.cos(d) + ops.cos(lat)
+                          * ops.sin(d) * ops.cos(direction))
+        return_lng = lng + atan2(ops.sin(direction) * ops.sin(d) *
+                                 ops.cos(lat), ops.cos(d) - ops.sin(lat) * ops.sin(return_lat))
+        return ops.degrees(return_lat), ops.degrees(return_lng)
+    return _inverse_haversine_kernel
+
+
+_haversine_kernel = _create_haversine_kernel(math)
+_inverse_haversine_kernel = _create_inverse_haversine_kernel(math)
+
+try:
+    import numpy
+    _haversine_kernel_vector = _create_haversine_kernel(numpy)
+    _inverse_haversine_kernel_vector = _create_inverse_haversine_kernel(numpy)
+except ModuleNotFoundError:
+    # Import error will be reported in haversine_vector() / inverse_haversine_vector()
+    pass
 
 try:
     import numba # type: ignore
     _haversine_kernel_vector = numba.vectorize(_haversine_kernel)
+    #_inverse_haversine_kernel_vector = numba.vectorize(_inverse_haversine_kernel) # Tuple output not supported
     _haversine_kernel = numba.njit(_haversine_kernel)
-    # Provoke an early Exception if numba compilation fails
-    _haversine_kernel(0.0, 0.0, 0.0, 0.0)
-except Exception as e:
-    if not isinstance(e, ModuleNotFoundError):
-        import warnings
-        warnings.warn(f'numba compilation failed: {e}')
-        _haversine_kernel = _create_haversine_kernel(math)
-    try:
-        import numpy
-        _haversine_kernel_vector = _create_haversine_kernel(numpy)
-    except ModuleNotFoundError:
-        # Import error will be reported in haversine_vector()
-        pass
+    _inverse_haversine_kernel = numba.njit(_inverse_haversine_kernel)
+except ModuleNotFoundError:
+    pass
 
 
 def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True):
@@ -221,17 +243,31 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
 
 
 def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
-    from math import asin, atan2, cos, degrees, radians, sin
-
     lat, lng = point
-    lat, lng = map(radians, (lat, lng))
-    d = distance
     r = get_avg_earth_radius(unit)
+    return _inverse_haversine_kernel(lat, lng, direction, distance/r)
 
-    return_lat = asin(sin(lat) * cos(d / r) + cos(lat)
-                      * sin(d / r) * cos(direction))
-    return_lng = lng + atan2(sin(direction) * sin(d / r) *
-                             cos(lat), cos(d / r) - sin(lat) * sin(return_lat))
 
-    return_lat, return_lng = map(degrees, (return_lat, return_lng))
-    return return_lat, return_lng
+def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS):
+    try:
+        import numpy
+    except ModuleNotFoundError:
+        raise RuntimeError('Error, unable to import Numpy, '
+                           'consider using inverse_haversine instead of inverse_haversine_vector.')
+
+    # ensure arrays are numpy ndarrays
+    array, distance, direction = map(numpy.asarray, (array, distance, direction))
+
+    # ensure will be able to iterate over rows by adding dimension if needed
+    if array.ndim == 1:
+        array = numpy.expand_dims(array, 0)
+
+    # Asserts that arrays are correctly sized
+    if array.ndim != 2 or array.shape[1] != 2 or array.shape[0] != len(distance) or array.shape[0] != len(direction):
+        raise IndexError("Arrays must be of same size.")
+
+    # unpack latitude/longitude
+    lat, lng = array[:, 0], array[:, 1]
+
+    r = get_avg_earth_radius(unit)
+    return _inverse_haversine_kernel_vector(lat, lng, direction, distance/r)
