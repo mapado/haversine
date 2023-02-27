@@ -99,9 +99,9 @@ def _ensure_lat_lon_vector(lat: "numpy.ndarray", lon: "numpy.ndarray"):
     """
     Ensure that the given latitude and longitude have proper values. An exception is raised if they are not.
     """
-    if numpy.max(numpy.abs(lat)) > 90:
+    if numpy.abs(lat).max() > 90:
         raise ValueError("Latitude(s) out of range [-90, 90]")
-    if numpy.max(numpy.abs(lon)) > 180:
+    if numpy.abs(lon).max() > 180:
         raise ValueError("Longitude(s) out of range [-180, 180]")
 
 
