@@ -72,6 +72,19 @@ def _normalize(lat: float, lon: float) -> Tuple[float, float]:
     return lat, lon
 
 
+def _normalize_vector(lat: "numpy.ndarray", lon: "numpy.ndarray") -> Tuple["numpy.ndarray", "numpy.ndarray"]:
+    """
+    Normalize points to [-90, 90] latitude and [-180, 180] longitude.
+    """
+    lat = (lat + 90) % 360 - 90
+    lon = (lon + 180) % 360 - 180
+    wrap = lat > 90
+    if numpy.any(wrap):
+        lat[wrap] = 180 - lat[wrap]
+        lon[wrap] = lon[wrap] % 360 - 180
+    return lat, lon
+
+
 def _ensure_lat_lon(lat: float, lon: float):
     """
     Ensure that the given latitude and longitude have proper values. An exception is raised if they are not.
@@ -80,6 +93,16 @@ def _ensure_lat_lon(lat: float, lon: float):
         raise ValueError(f"Latitude {lat} is out of range [-90, 90]")
     if lon < -180 or lon > 180:
         raise ValueError(f"Longitude {lon} is out of range [-180, 180]")
+
+
+def _ensure_lat_lon_vector(lat: "numpy.ndarray", lon: "numpy.ndarray"):
+    """
+    Ensure that the given latitude and longitude have proper values. An exception is raised if they are not.
+    """
+    if numpy.max(numpy.abs(lat)) > 90:
+        raise ValueError("Latitude(s) out of range [-90, 90]")
+    if numpy.max(numpy.abs(lon)) > 180:
+        raise ValueError("Longitude(s) out of range [-180, 180]")
 
 
 def _explode_args(f):
@@ -228,17 +251,17 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
             raise IndexError(
                 "When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument.")
 
-    # normalize points or ensure they are proper lat/lon, i.e., in [-90, 90] and [-180, 180]
-    if normalize:
-        array1 = numpy.array([_normalize(p[0], p[1]) for p in array1])
-        array2 = numpy.array([_normalize(p[0], p[1]) for p in array2])
-    elif check:
-        [_ensure_lat_lon(p[0], p[1]) for p in array1]
-        [_ensure_lat_lon(p[0], p[1]) for p in array2]
-
     # unpack latitude/longitude
     lat1, lng1 = array1[:, 0], array1[:, 1]
     lat2, lng2 = array2[:, 0], array2[:, 1]
+
+    # normalize points or ensure they are proper lat/lon, i.e., in [-90, 90] and [-180, 180]
+    if normalize:
+        lat1, lng1 = _normalize_vector(lat1, lng1)
+        lat2, lng2 = _normalize_vector(lat2, lng2)
+    elif check:
+        _ensure_lat_lon_vector(lat1, lng1)
+        _ensure_lat_lon_vector(lat2, lng2)
 
     # If in combination mode, turn coordinates of array1 into column vectors for broadcasting
     if comb:
