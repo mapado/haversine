@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.8.0
+
+- Performance improvements, especially with the `haversine_vector` function [#65](https://github.com/mapado/haversine/pull/65) by [jobh](https://github.com/jobh)
+
 ## 2.7.0
 
 Official support of python 3.10, 3.11 and 3.12
