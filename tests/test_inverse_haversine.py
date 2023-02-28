@@ -45,3 +45,18 @@ def test_inverse_miles():
 def test_nautical_inverse_miles():
     assert isclose(inverse_haversine(PARIS, 10, Direction.SOUTH,
                    unit=Unit.NAUTICAL_MILES), (48.69014586638915, 2.3508), rtol=1e-5).all()
+
+
+@pytest.mark.parametrize(
+    "point, direction, distance, unit, expected",
+    [
+        (PARIS, Direction.WEST, 3000, Unit.KILOMETERS, (PARIS[0], 0)),
+        # (LYON, Direction.WEST, 3000, Unit.KILOMETERS, (LYON[0], 0)),
+    ],
+)
+def test_explicit_cardinal_points(point, direction, distance, unit, expected):
+    """
+    Test going north/south should not alter latitude and going east/west should not alter longitude
+    """
+    assert inverse_haversine(point, distance, direction, unit)[
+        0] == expected[0]
