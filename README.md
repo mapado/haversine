@@ -88,7 +88,8 @@ inverse_haversine(paris, 10, Direction.SOUTH, unit=Unit.NAUTICAL_MILES)
 
 ### Performance optimisation for distances between all points in two vectors
 
-You will need to add [numpy](https://pypi.org/project/numpy/) in order to gain performance with vectors.
+You will need to install [numpy](https://pypi.org/project/numpy/) in order to gain performance with vectors.
+For optimal performance, you can turn off coordinate checking by adding `check=False` and install the optional packages [numba](https://pypi.org/project/numba/) and [icc_rt](https://pypi.org/project/icc_rt/).
 
 You can then do this:
 
