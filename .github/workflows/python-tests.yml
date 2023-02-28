@@ -24,9 +24,9 @@ jobs:
           - '3.10'
           - '3.11'
         experimental: [false]
-        include:
-          - python-version: '3.12-dev'
-            experimental: true
+        # include:
+        #   - python-version: '3.12-dev'
+        #     experimental: true
 
     name: Python ${{ matrix.python-version }}
 
