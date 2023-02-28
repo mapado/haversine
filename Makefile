@@ -12,7 +12,7 @@ build:
 ## deploy: Deploy haversine to pypi
 deploy: clean build
 	pipenv install twine
-	pipenv run twine upload dist/*
+	pipenv run twine upload dist/* --verbose
 	pipenv uninstall twine
 	git checkout -- Pipfile.lock
 
