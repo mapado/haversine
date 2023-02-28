@@ -45,8 +45,20 @@ jobs:
           pip install pipenv
 
       - name: Install dependencies
-        run: pipenv install --dev
+        run: |
+          pipenv install --dev
 
       - name: Test with pytest
+        run: |
+          pipenv run py.test
+
+      - name: Install numba
+        id: install-numba
+        continue-on-error: true
+        run: |
+          pipenv install numba icc_rt
+
+      - name: Rerun tests with numba
+        if: steps.install-numba.outcome == 'success'
         run: |
           pipenv run py.test
