@@ -16,6 +16,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
 
     strategy:
+      fail-fast: false
       matrix:
         python-version:
           - '3.7'
