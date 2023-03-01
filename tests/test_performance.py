@@ -1,15 +1,20 @@
 from .  import haversine_baseline as baseline
-import haversine
+import haversine as current
 import numpy as np
 import pytest
-from timeit import repeat
+from timeit import timeit
 
 def assert_performance(func, number):
-    t_baseline  = repeat(lambda: func(baseline),  number=number, repeat=5)
-    t_haversine = repeat(lambda: func(haversine), number=number, repeat=5)
+    # Interleave measurements and compare fastest current to median baseline.
+    # All in an attempt to avoid spurious errors caused by fluctuating load on
+    # the runner.
+    t_baseline, t_current = [], []
+    for repeat in range(5):
+        t_baseline.append(timeit(lambda: func(baseline),  number=number))
+        t_current.append(timeit(lambda: func(current),  number=number))
 
-    perf_ratio = min(t_haversine) / min(t_baseline)
-    assert perf_ratio <= 1.2
+    perf_ratio = np.min(t_current) / np.median(t_baseline)
+    assert perf_ratio <= 1.1
 
 
 @pytest.mark.parametrize(
