@@ -171,7 +171,7 @@ except ModuleNotFoundError:
 try:
     import numba # type: ignore
     if has_numpy:
-        _haversine_kernel_vector = numba.vectorize(fastmath=True)(_haversine_kernel)
+        _haversine_kernel_vector = numba.vectorize(fastmath=True)(_haversine_kernel_vector)
         # Tuple output is not supported for numba.vectorize. Just jit the numpy version.
         _inverse_haversine_kernel_vector = numba.njit(fastmath=True)(_inverse_haversine_kernel_vector)
     _haversine_kernel = numba.njit(_haversine_kernel)
