@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.8.1
+
+- Use numpy kernel when using numba [#73](https://github.com/mapado/haversine/pull/73) by [@jdeniau](https://github.com/jdeniau)
+
 ## 2.8.0
 
 - Performance improvements, especially with the `haversine_vector` function [#65](https://github.com/mapado/haversine/pull/65) by [jobh](https://github.com/jobh)
