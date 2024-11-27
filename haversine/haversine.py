@@ -15,14 +15,14 @@ class Unit(str, Enum):
     the expression `tuple(Unit)`.
     """
 
-    KILOMETERS = 'km'
-    METERS = 'm'
-    MILES = 'mi'
-    NAUTICAL_MILES = 'nmi'
-    FEET = 'ft'
-    INCHES = 'in'
-    RADIANS = 'rad'
-    DEGREES = 'deg'
+    KILOMETERS = "km"
+    METERS = "m"
+    MILES = "mi"
+    NAUTICAL_MILES = "nmi"
+    FEET = "ft"
+    INCHES = "in"
+    RADIANS = "rad"
+    DEGREES = "deg"
 
 
 class Direction(float, Enum):
@@ -45,14 +45,14 @@ class Direction(float, Enum):
 
 # Unit values taken from http://www.unitconversion.org/unit_converter/length.html
 _CONVERSIONS = {
-    Unit.KILOMETERS:       1.0,
-    Unit.METERS:           1000.0,
-    Unit.MILES:            0.621371192,
-    Unit.NAUTICAL_MILES:   0.539956803,
-    Unit.FEET:             3280.839895013,
-    Unit.INCHES:           39370.078740158,
-    Unit.RADIANS:          1/_AVG_EARTH_RADIUS_KM,
-    Unit.DEGREES:          (1/_AVG_EARTH_RADIUS_KM)*(180.0/pi)
+    Unit.KILOMETERS: 1.0,
+    Unit.METERS: 1000.0,
+    Unit.MILES: 0.621371192,
+    Unit.NAUTICAL_MILES: 0.539956803,
+    Unit.FEET: 3280.839895013,
+    Unit.INCHES: 39370.078740158,
+    Unit.RADIANS: 1 / _AVG_EARTH_RADIUS_KM,
+    Unit.DEGREES: (1 / _AVG_EARTH_RADIUS_KM) * (180.0 / pi),
 }
 
 
@@ -72,7 +72,9 @@ def _normalize(lat: float, lon: float) -> Tuple[float, float]:
     return lat, lon
 
 
-def _normalize_vector(lat: "numpy.ndarray", lon: "numpy.ndarray") -> Tuple["numpy.ndarray", "numpy.ndarray"]:
+def _normalize_vector(
+    lat: "numpy.ndarray", lon: "numpy.ndarray"
+) -> Tuple["numpy.ndarray", "numpy.ndarray"]:
     """
     Normalize points to [-90, 90] latitude and [-180, 180] longitude.
     """
@@ -124,17 +126,28 @@ def _create_haversine_kernel(*, asin=None, arcsin=None, cos, radians, sin, sqrt,
         lng2 = radians(lng2)
         lat = lat2 - lat1
         lng = lng2 - lng1
-        d = (sin(lat * 0.5) ** 2
-             + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2)
+        d = sin(lat * 0.5) ** 2 + cos(lat1) * cos(lat2) * sin(lng * 0.5) ** 2
         # Note: 2 * atan2(sqrt(d), sqrt(1-d)) is more accurate at
         # large distance (d is close to 1), but also slower.
         return 2 * asin(sqrt(d))
+
     return _haversine_kernel
 
 
-
 @_explode_args
-def _create_inverse_haversine_kernel(*, asin=None, arcsin=None, atan2=None, arctan2=None, cos, degrees, radians, sin, sqrt, **_):
+def _create_inverse_haversine_kernel(
+    *,
+    asin=None,
+    arcsin=None,
+    atan2=None,
+    arctan2=None,
+    cos,
+    degrees,
+    radians,
+    sin,
+    sqrt,
+    **_,
+):
     asin = asin or arcsin
     atan2 = atan2 or arctan2
 
@@ -150,9 +163,11 @@ def _create_inverse_haversine_kernel(*, asin=None, arcsin=None, atan2=None, arct
         cos_lat, sin_lat = cos(lat), sin(lat)
         sin_d_cos_lat = sin_d * cos_lat
         return_lat = asin(cos_d * sin_lat + sin_d_cos_lat * cos(direction))
-        return_lng = lng + atan2(sin(direction) * sin_d_cos_lat,
-                                 cos_d - sin_lat * sin(return_lat))
+        return_lng = lng + atan2(
+            sin(direction) * sin_d_cos_lat, cos_d - sin_lat * sin(return_lat)
+        )
         return degrees(return_lat), degrees(return_lng)
+
     return _inverse_haversine_kernel
 
 
@@ -161,6 +176,7 @@ _inverse_haversine_kernel = _create_inverse_haversine_kernel(math)
 
 try:
     import numpy
+
     has_numpy = True
     _haversine_kernel_vector = _create_haversine_kernel(numpy)
     _inverse_haversine_kernel_vector = _create_inverse_haversine_kernel(numpy)
@@ -169,11 +185,16 @@ except ModuleNotFoundError:
     has_numpy = False
 
 try:
-    import numba # type: ignore
+    import numba  # type: ignore
+
     if has_numpy:
-        _haversine_kernel_vector = numba.vectorize(fastmath=True)(_haversine_kernel_vector)
+        _haversine_kernel_vector = numba.vectorize(fastmath=True)(
+            _haversine_kernel_vector
+        )
         # Tuple output is not supported for numba.vectorize. Just jit the numpy version.
-        _inverse_haversine_kernel_vector = numba.njit(fastmath=True)(_inverse_haversine_kernel_vector)
+        _inverse_haversine_kernel_vector = numba.njit(fastmath=True)(
+            _inverse_haversine_kernel_vector
+        )
     _haversine_kernel = numba.njit(_haversine_kernel)
     _inverse_haversine_kernel = numba.njit(_inverse_haversine_kernel)
 except ModuleNotFoundError:
@@ -181,7 +202,7 @@ except ModuleNotFoundError:
 
 
 def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True):
-    """ Calculate the great-circle distance between two points on the Earth surface.
+    """Calculate the great-circle distance between two points on the Earth surface.
 
     Takes two 2-tuples, containing the latitude and longitude of each point in decimal degrees,
     and, optionally, a unit of length.
@@ -221,17 +242,21 @@ def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True)
     return get_avg_earth_radius(unit) * _haversine_kernel(lat1, lng1, lat2, lng2)
 
 
-def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False, check=True):
-    '''
+def haversine_vector(
+    array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False, check=True
+):
+    """
     The exact same function as "haversine", except that this
     version replaces math functions with numpy functions.
     This may make it slightly slower for computing the haversine
     distance between two points, but is much faster for computing
     the distance between two vectors of points due to vectorization.
-    '''
+    """
     if not has_numpy:
-        raise RuntimeError('Error, unable to import Numpy, '
-                           'consider using haversine instead of haversine_vector.')
+        raise RuntimeError(
+            "Error, unable to import Numpy, "
+            "consider using haversine instead of haversine_vector."
+        )
 
     # ensure arrays are numpy ndarrays
     if not isinstance(array1, numpy.ndarray):
@@ -249,7 +274,8 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     if not comb:
         if array1.shape != array2.shape:
             raise IndexError(
-                "When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument.")
+                "When not in combination mode, arrays must be of same size. If mode is required, use comb=True as argument."
+            )
 
     # unpack latitude/longitude
     lat1, lng1 = array1[:, 0], array1[:, 1]
@@ -273,16 +299,28 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     return get_avg_earth_radius(unit) * _haversine_kernel_vector(lat1, lng1, lat2, lng2)
 
 
-def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
+def inverse_haversine(
+    point,
+    distance,
+    direction: Union[Direction, float],
+    unit=Unit.KILOMETERS,
+    normalize_output=False,
+):
     lat, lng = point
     r = get_avg_earth_radius(unit)
-    return _inverse_haversine_kernel(lat, lng, direction, distance/r)
+    outLat, outLng = _inverse_haversine_kernel(lat, lng, direction, distance / r)
+    if normalize_output:
+        return _normalize(outLat, outLng)
+    else:
+        return (outLat, outLng)
 
 
 def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS):
     if not has_numpy:
-        raise RuntimeError('Error, unable to import Numpy, '
-                           'consider using inverse_haversine instead of inverse_haversine_vector.')
+        raise RuntimeError(
+            "Error, unable to import Numpy, "
+            "consider using inverse_haversine instead of inverse_haversine_vector."
+        )
 
     # ensure arrays are numpy ndarrays
     array, distance, direction = map(numpy.asarray, (array, distance, direction))
@@ -292,11 +330,16 @@ def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS):
         array = numpy.expand_dims(array, 0)
 
     # Asserts that arrays are correctly sized
-    if array.ndim != 2 or array.shape[1] != 2 or array.shape[0] != len(distance) or array.shape[0] != len(direction):
+    if (
+        array.ndim != 2
+        or array.shape[1] != 2
+        or array.shape[0] != len(distance)
+        or array.shape[0] != len(direction)
+    ):
         raise IndexError("Arrays must be of same size.")
 
     # unpack latitude/longitude
     lat, lng = array[:, 0], array[:, 1]
 
     r = get_avg_earth_radius(unit)
-    return _inverse_haversine_kernel_vector(lat, lng, direction, distance/r)
+    return _inverse_haversine_kernel_vector(lat, lng, direction, distance / r)
