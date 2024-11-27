@@ -45,3 +45,17 @@ def test_inverse_miles():
 def test_nautical_inverse_miles():
     assert isclose(inverse_haversine(PARIS, 10, Direction.SOUTH,
                    unit=Unit.NAUTICAL_MILES), (48.69014586638915, 2.3508), rtol=1e-5).all()
+
+def test_inverse_normalization():
+    twoDegreesAtEquator = 222390.1
+    # non-breaking behavior without normalization
+    _, pointWestLon = inverse_haversine(
+        (0.0, -179.0), twoDegreesAtEquator, Direction.WEST, Unit.METERS)
+    assert isclose(pointWestLon, -181.0, rtol=1e-5,)
+
+    # behavior with normalization
+    _, pointWestLon = inverse_haversine(
+        (0.0, -179.0), twoDegreesAtEquator, direction=Direction.WEST,
+        unit=Unit.METERS, normalize_output=True,)
+    assert isclose(pointWestLon, 179.0, rtol=1e-5,)
+
