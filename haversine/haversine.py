@@ -273,10 +273,14 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     return get_avg_earth_radius(unit) * _haversine_kernel_vector(lat1, lng1, lat2, lng2)
 
 
-def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS):
+def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS, normalize_output=False):
     lat, lng = point
     r = get_avg_earth_radius(unit)
-    return _inverse_haversine_kernel(lat, lng, direction, distance/r)
+    outLat, outLng = _inverse_haversine_kernel(lat, lng, direction, distance / r)
+    if normalize_output:
+        return _normalize(outLat, outLng)
+    else:
+        return (outLat, outLng)
 
 
 def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS):
