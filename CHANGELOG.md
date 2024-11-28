@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## Unreleased
+## 2.9.0
 
 - Adding option to normalize output of inverse_haversine [#78](https://github.com/mapado/haversine/pull/78) by [@thillerson](https://github.com/thillerson)
+- add normalize_output to inverse_haversine_vector [#79](https://github.com/mapado/haversine/pull/79) by [@jdeniau](https://github.com/jdeniau)
 
 ## 2.8.1
 
