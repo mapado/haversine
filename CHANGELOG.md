@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Adding option to normalize output of inverse_haversine [#78](https://github.com/mapado/haversine/pull/78) by [@thillerson](https://github.com/thillerson)
+
 ## 2.8.1
 
 - Use numpy kernel when using numba [#73](https://github.com/mapado/haversine/pull/73) by [@jdeniau](https://github.com/jdeniau)
@@ -27,11 +31,11 @@ Official support of python 3.10, 3.11 and 3.12
 ## 2.4.1
 
 - Fix issue with python 2.7 compatibily. See [#41](https://github.com/mapado/haversine/issues/41)
+
 ## 2.4.0
 
 - Added inver haversine functionality [#39](https://github.com/mapado/haversine/pull/39) by [@CrapsJeroen](https://github.com/CrapsJeroen)
 - Adds radians and degrees units [#40](https://github.com/mapado/haversine/pull/40) by [@merschformann](https://github.com/merschformann)
-
 
 ## 2.3.1
 
