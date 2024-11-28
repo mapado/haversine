@@ -6,6 +6,5 @@ name = "pypi"
 [dev-packages]
 pytest = {version = "~=7.1"}
 numpy = "*"
-build = "*"
 
 [packages]

@@ -7,6 +7,7 @@ clean:
 .PHONY: build
 ## build: Build package
 build:
+	pipenv install build --dev --skip-lock
 	pipenv run python -m build
 
 ## deploy: Deploy haversine to pypi
