@@ -7,7 +7,7 @@ clean:
 .PHONY: build
 ## build: Build package
 build:
-	pipenv run python setup.py sdist bdist_wheel
+	pipenv run python -m build
 
 ## deploy: Deploy haversine to pypi
 deploy: clean build
