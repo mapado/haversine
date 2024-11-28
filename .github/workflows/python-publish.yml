@@ -30,5 +30,9 @@ jobs:
           cache: "pipenv"
       - name: Install pipenv
         run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
+
+      - name: Install dependencies
+        run: pipenv install --dev
+
       - name: Publish package
         run: TWINE_USERNAME=__token__ TWINE_PASSWORD=${{ secrets.PIPY_HAVERSINE_TOKEN }} make deploy
