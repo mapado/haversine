@@ -31,7 +31,7 @@ Official support of python 3.10, 3.11 and 3.12
 
 ## 2.4.1
 
-- Fix issue with python 2.7 compatibily. See [#41](https://github.com/mapado/haversine/issues/41)
+- Fix issue with python 2.7 compatibility. See [#41](https://github.com/mapado/haversine/issues/41)
 
 ## 2.4.0
 
@@ -96,7 +96,7 @@ If you did use `miles` or `nautical_miles`, you just need to do that:
 + haversine(lyon, paris, unit='nmi')
 ```
 
-Du to a small change in the formula, the precision for miles aud nautical miles has slighty changed.
+Du to a small change in the formula, the precision for miles aud nautical miles has slightly changed.
 Example : distance between Lyon, France and Paris, France changed from `243.7125041070121 miles` to `243.71250609539814 miles`. Same for nautical miles.
 
 ## 1.0.2 - 2018-10-13

@@ -66,7 +66,7 @@ Calculates a point from a given vector (distance and direction) and start point.
 Currently explicitly supports both cardinal (north, east, south, west) and intercardinal (northeast, southeast, southwest, northwest) directions.
 But also allows for explicit angles expressed in Radians.
 
-## Example: Finding arbitary point from Paris
+## Example: Finding arbitrary point from Paris
 
 ```python
 from haversine import inverse_haversine, Direction
