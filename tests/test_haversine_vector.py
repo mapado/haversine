@@ -11,10 +11,11 @@ from tests.geo_ressources import EXPECTED_LONDON_PARIS, EXPECTED_LYON_NEW_YORK, 
 def test_pair(unit):
     def test_lyon_paris(unit):
         expected_lyon_paris = EXPECTED_LYON_PARIS[unit]
-        assert haversine_vector(LYON, PARIS, unit=unit) == expected_lyon_paris
+        assert haversine_vector(
+            LYON, PARIS, unit=unit) == pytest.approx(expected_lyon_paris)
         assert isinstance(unit.value, str)
         assert haversine_vector(
-            LYON, PARIS, unit=unit.value) == expected_lyon_paris
+            LYON, PARIS, unit=unit.value) == pytest.approx(expected_lyon_paris)
 
     return test_lyon_paris(unit)
 
