@@ -221,6 +221,37 @@ def haversine(point1, point2, unit=Unit.KILOMETERS, normalize=False, check=True)
     return get_avg_earth_radius(unit) * _haversine_kernel(lat1, lng1, lat2, lng2)
 
 
+def haversine_path(points, unit=Unit.KILOMETERS, cumulative=False, normalize=False, check=True):
+    """ Calculate the length of a path (e.g. a GPS track) through an ordered sequence of points.
+
+    The distance between each pair of consecutive points is computed with the haversine
+    formula and the legs are summed.
+
+    :param points: ordered iterable of (latitude, longitude) tuples in decimal degrees
+    :param unit: a member of haversine.Unit, or its string abbreviation; default 'km'
+    :param cumulative: if True, return a list with the running distance at each point
+                       (first value is 0.0) instead of only the total
+    :param normalize: if True, normalize the points to [-90, 90] latitude and [-180, 180] longitude.
+    :param check: if True, check that points are normalized.
+
+    Example: ``haversine_path([PARIS, LYON, MARSEILLE], unit=Unit.KILOMETERS)``
+
+    :return: the total path length as a float (0.0 for fewer than two points), or, when
+             ``cumulative`` is True, a list of floats with one entry per point.
+    """
+    points = list(points)
+    legs = [haversine(a, b, unit=unit, normalize=normalize, check=check)
+            for a, b in zip(points, points[1:])]
+    if not cumulative:
+        return math.fsum(legs)
+    running = [0.0] if points else []
+    total = 0.0
+    for leg in legs:
+        total += leg
+        running.append(total)
+    return running
+
+
 def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize=False, check=True):
     '''
     The exact same function as "haversine", except that this

@@ -60,6 +60,19 @@ Notes:
 - on a unit-sphere the angular distance in radians equals the distance between the two points on the sphere (definition of radians)
 - When using "degree", this angle is just converted from radians to degrees
 
+### Length of a path (GPS track)
+
+`haversine_path` sums the distance between consecutive points of an ordered route:
+
+```python
+from haversine import haversine_path, Unit
+
+route = [(48.8567, 2.3508), (45.7597, 4.8422), (43.2965, 5.3698)]  # Paris, Lyon, Marseille
+haversine_path(route)                       # total length in km
+haversine_path(route, unit=Unit.MILES)      # total length in miles
+haversine_path(route, cumulative=True)      # running distance at each point, starting at 0.0
+```
+
 ### Inverse Haversine Formula
 
 Calculates a point from a given vector (distance and direction) and start point.
