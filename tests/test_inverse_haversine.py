@@ -59,3 +59,18 @@ def test_inverse_normalization():
         unit=Unit.METERS, normalize_output=True,)
     assert isclose(pointWestLon, 179.0, rtol=1e-5,)
 
+
+
+@pytest.mark.parametrize('point', [(-91, 0), (91, 0), (0, -181), (0, 181)])
+def test_inverse_rejects_invalid_coordinates(point):
+    with pytest.raises(ValueError):
+        inverse_haversine(point, 10, Direction.NORTH, check=True)
+
+
+@pytest.mark.parametrize('point', [(-90, -180), (90, 180), (0, 180)])
+def test_inverse_accepts_coordinate_boundaries(point):
+    assert inverse_haversine(point, 0, Direction.NORTH, check=True) == pytest.approx(point)
+
+
+def test_inverse_coordinate_check_is_optional():
+    assert inverse_haversine((0, 181), 0, Direction.NORTH) == pytest.approx((0, 181))

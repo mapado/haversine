@@ -66,6 +66,12 @@ Calculates a point from a given vector (distance and direction) and start point.
 Currently explicitly supports both cardinal (north, east, south, west) and intercardinal (northeast, southeast, southwest, northwest) directions.
 But also allows for explicit angles expressed in Radians.
 
+Pass `check=True` to `inverse_haversine` or `inverse_haversine_vector` to
+validate starting coordinates. This raises `ValueError` for latitude outside
+[-90, 90] or longitude outside [-180, 180]. Input checking is disabled by
+default for compatibility. Output normalization is controlled separately by
+`normalize_output=True`.
+
 ## Example: Finding arbitrary point from Paris
 
 ```python

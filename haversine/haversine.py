@@ -273,8 +273,10 @@ def haversine_vector(array1, array2, unit=Unit.KILOMETERS, comb=False, normalize
     return get_avg_earth_radius(unit) * _haversine_kernel_vector(lat1, lng1, lat2, lng2)
 
 
-def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS, normalize_output=False):
+def inverse_haversine(point, distance, direction: Union[Direction, float], unit=Unit.KILOMETERS, normalize_output=False, check=False):
     lat, lng = point
+    if check:
+        _ensure_lat_lon(lat, lng)
     r = get_avg_earth_radius(unit)
     outLat, outLng = _inverse_haversine_kernel(lat, lng, direction, distance / r)
 
@@ -284,7 +286,7 @@ def inverse_haversine(point, distance, direction: Union[Direction, float], unit=
         return (outLat, outLng)
 
 
-def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS, normalize_output=False): # -> Tuple["numpy.ndarray", "numpy.ndarray"]:
+def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS, normalize_output=False, check=False): # -> Tuple["numpy.ndarray", "numpy.ndarray"]:
     if not has_numpy:
         raise RuntimeError('Error, unable to import Numpy, '
                            'consider using inverse_haversine instead of inverse_haversine_vector.')
@@ -302,6 +304,8 @@ def inverse_haversine_vector(array, distance, direction, unit=Unit.KILOMETERS, n
 
     # unpack latitude/longitude
     lat, lng = array[:, 0], array[:, 1]
+    if check:
+        _ensure_lat_lon_vector(lat, lng)
 
     r = get_avg_earth_radius(unit)
     outLatArray, outLngArray = _inverse_haversine_kernel_vector(lat, lng, direction, distance/r)

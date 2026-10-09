@@ -52,3 +52,19 @@ def test_inverse_normalization():
 
     assert isclose(lngArray[0], 179.0, rtol=1e-5,).all()
     assert isclose(lngArray[1], -0.840556, rtol=1e-5,).all()
+
+@pytest.mark.parametrize('point', [(-91, 0), (91, 0), (0, -181), (0, 181)])
+def test_inverse_rejects_invalid_coordinates(point):
+    with pytest.raises(ValueError):
+        inverse_haversine_vector([PARIS, point], [10, 10], [Direction.NORTH, Direction.NORTH], check=True)
+
+
+@pytest.mark.parametrize('point', [(-90, -180), (90, 180), (0, 180)])
+def test_inverse_accepts_coordinate_boundaries(point):
+    lat, lng = inverse_haversine_vector([point], [0], [Direction.NORTH], check=True)
+    assert (lat[0], lng[0]) == pytest.approx(point)
+
+
+def test_inverse_coordinate_check_is_optional():
+    lat, lng = inverse_haversine_vector([(0, 181)], [0], [Direction.NORTH])
+    assert (lat[0], lng[0]) == pytest.approx((0, 181))
