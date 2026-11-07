@@ -176,7 +176,9 @@ try:
         _inverse_haversine_kernel_vector = numba.njit(fastmath=True)(_inverse_haversine_kernel_vector)
     _haversine_kernel = numba.njit(_haversine_kernel)
     _inverse_haversine_kernel = numba.njit(_inverse_haversine_kernel)
-except ModuleNotFoundError:
+except ImportError:
+    # numba is optional. Besides being absent, it can refuse to import, e.g.
+    # "Numba needs NumPy 2.4 or less", which must not break haversine.
     pass
 
 
